@@ -1,0 +1,73 @@
+$sidebar-width: 250px !default;
+$sidebar-collapsed-width: 48px !default;
+$app-header-height: 50px !default;
+
+html,
+body {
+	height: 100%;
+}
+
+.app {
+	height: 100%;
+	position: relative;
+}
+
+.app-sidebar {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	transition: width 0.3s;
+}
+
+.app-has-sidebar .sidebar {
+	width: $sidebar-width;
+}
+
+.app-has-sidebar-collapsed .sidebar {
+	width: $sidebar-collapsed-width;
+}
+
+.app-content {
+	height: 100%;
+	overflow-y: auto;
+	border-top: $app-header-height + 1px solid transparent;
+}
+
+.app-has-sidebar .app-content {
+	border-left: $sidebar-width solid transparent;
+}
+
+.app-has-sidebar-collapsed .app-content {
+	border-left: $sidebar-collapsed-width solid transparent;
+}
+
+.app-header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	border-bottom: 1px solid $light-divider;
+}
+
+.app-has-sidebar .app-header {
+	border-left: $sidebar-width solid transparent;
+}
+
+.app-has-sidebar-collapsed .app-header {
+	border-left: $sidebar-collapsed-width solid transparent;
+}
+
+.app-header-button {
+	height: 50px;
+	color: $light-body-text;
+	display: inline-block;
+	padding: 15px 10px;
+	display: inline-flex;
+	align-items: center;
+}
+
+.app-header-button:hover {
+	background: $light-tertiary-bg;
+	text-decoration: none;
+}

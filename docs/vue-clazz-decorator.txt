@@ -1,0 +1,2182 @@
+# vue-clazz-decorator - Full Documentation for LLMs
+# ====================================================
+# Description: Write Vue 3 components with Class + Decorators, featuring
+#              ViewModel/View separation, metadata system, and reactive model layer.
+# Version: 0.1.0
+# License: MIT
+# Author: linsk
+# Repository: https://github.com/linsk1998/vue-clazz-decorator
+# Keywords: vue, vue3, class, decorator, clazz, viewmodel, reactive, model, hydrate, serialize, metadata, typescript
+# Generated on: 2026-08-09 21:16:04
+# ====================================================
+
+
+# README
+
+`vue-clazz-decorator` 让你在 Vue 3 中使用 **Class + 装饰器** 的风格来写组件。
+
+[![npm version](https://img.shields.io/npm/v/vue-clazz-decorator.svg)](https://www.npmjs.com/package/vue-clazz-decorator)
+[![license](https://img.shields.io/npm/l/vue-clazz-decorator.svg)](https://github.com/linsk1998/vue-clazz-decorator/blob/main/LICENSE)
+[![CI](https://github.com/linsk1998/vue-clazz-decorator/actions/workflows/ci.yml/badge.svg)](https://github.com/linsk1998/vue-clazz-decorator/actions/workflows/ci.yml)
+
+## 特色
+
++ 通过类的方式来写 Vue 组件
++ 方便地复用模板和逻辑
++ 保证自定义类型的纯净
++ 支持多种装饰器编译方式
++ 兼容 reflect-metadata API
++ 完整的数据模型层：序列化/反序列化/类型转换
+
+如果你喜欢 vue-class-component 或 vue-property-decorator, 那么请试试这个项目吧！
+
+## 创建组件
+
+这个库的核心思想是 **组件 = 模板 + 业务逻辑**。这是 `createComponent` 设计的体现，避开 Vue 3 不能用 class 组件的同时，顺便能复用模板和逻辑。
+
+```tsx
+@ViewModel
+export class CounterViewModel {
+    @State
+    public count = 0;
+
+    @Computed
+    public get doubleCount() {
+        return this.count * 2;
+    }
+
+    public increment() {
+        this.count++;
+    }
+}
+export function CounterView(props: CounterViewModel) {
+    return <div>
+        <p>Count: {props.count}</p>
+        <button onClick={props.increment}>+1</button>
+    </div>;
+}
+
+export const Counter = createComponent(CounterView, CounterViewModel);
+```
+
+## 组件生命周期
+
+使用注解声明生命周期方法，不强制固定方法名，一个钩子可以绑定多个方法，保证类的纯净。
+
+```tsx
+@ViewModel
+export class FooViewModel {
+    @OnDidCreate
+    protected init() {
+        console.log("ViewModel created");
+    }
+
+    @OnDidMount
+    protected xxxx() {
+        console.log("componentDidMount");
+    }
+    @OnDidMount
+    protected yyyy() {
+        console.log("componentDidMount again");
+    }
+}
+export function FooView(props: FooViewModel) {
+    return <div></div>;
+}
+
+export const Foo = createComponent(FooView, FooViewModel);
+```
+
+## 组件逻辑复用
+
+业务逻辑自动就包在命名空间里，非常易于管理。
+
+```tsx
+@ViewModel
+export class FooViewModel {
+}
+@ViewModel
+export class BarViewModel {
+    public foo1 = use(FooViewModel);
+    public foo2 = use(FooViewModel);
+}
+export function BarView(props: BarViewModel) {
+    return <div></div>;
+}
+
+export const Bar = createComponent(BarView, BarViewModel);
+```
+
+## 模型层声明
+
+用 `@Model` 标记数据模型类，结合元数据描述字段含义，再通过 `reactive()` 将普通数据转为响应式实例，同时保留类型信息。
+
+```typescript
+@Model
+export class UserBo {
+    @metadata('label', "用户ID")
+    public id: string;
+
+    @metadata('label', "用户名")
+    public name: string;
+}
+var user = reactive({
+    id: "admin",
+    name: "超级管理员",
+}, UserBo);
+```
+
+## 如何写一个注解
+
+库内置的metadata函数可以便捷地帮助我们创建一个注解。
+
+```typescript
+// 定义一个注解
+function Label(text: string) {
+    return metadata('label', text);
+}
+
+// 使用
+@Model
+export class UserBo {
+    @Label("用户ID")
+    public id: string;
+
+    @Label("用户名")
+    public name: string;
+}
+
+// 获取元数据
+getMetadataValues(UserBo);
+// { id: { label: "用户ID"}, name: { label: "用户名" } }
+```
+
+## 支持的装饰器编译方式
+
+项目支持多种方式，并可以混合使用。
+
+* `experimentalDecorators: false` + `useDefineForClassFields: true` 以下简称 **proposal**
+* `experimentalDecorators: true` + `useDefineForClassFields: false` 以下简称 **experimental**
+* `experimentalDecorators: true` + `useDefineForClassFields: false` + `emitDecoratorMetadata: true` 以下简称 **metadata**
+
+
+| 编译方式 | proposal | experimental | metadata |
+| --- | --- | --- | --- |
+| typescript | ✅ 支持 | ✅ 支持 | ✅ 支持 |
+| babel | ✅ 支持 | ✅ 支持 | ✅ 支持 |
+
+---
+
+## 文档导航
+
+- [新手上路](docs/getting-started.md) — 环境配置、第一个组件、装饰器编译
+- [组件开发](docs/component.md) — 如何用类和装饰器开发 Vue 组件
+- [元数据操作](docs/metadata.md) — 如何对类的元数据进行增删改查
+- [数据模型](docs/model.md) — 数据类型转化、JSON 序列化
+- [进阶用法](docs/advanced.md) — 构建方式、自定义装饰器
+- [API 参考](docs/api.md) — 函数签名与参数速查
+- [常见问题](docs/faq.md) — FAQ
+
+
+## 功能清单
+
+| 分类 | API |
+| --- | --- |
+| 组件创建 | [createComponent](docs/component.md#createcomponent) [use](#组件逻辑复用) [useChildren](docs/component.md#子组件) |
+| 类装饰器 | [@ViewModel](docs/component.md#viewmodel) [@Model](docs/model.md#model-声明一个模型) |
+| 数据装饰器 | [@State](docs/component.md#state) [@Reactive](docs/component.md#reactive) [@Computed](docs/component.md#computed) [@Ref](docs/component.md#ref) [@Watch](docs/component.md#watch) |
+| 组件通信装饰器 | [@Prop](docs/component.md#prop) [@Emit](docs/component.md#emit) [@ModelValue](docs/component.md#modelvalue) [@Provide](docs/component.md#provide--inject) [@Inject](docs/component.md#provide--inject) |
+| 生命周期装饰器 | [@OnDidCreate](docs/component.md#生命周期) [@OnWillMount](docs/component.md#生命周期) [@OnDidMount](docs/component.md#生命周期) [@OnWillUpdate](docs/component.md#生命周期) [@OnDidUpdate](docs/component.md#生命周期) [@OnWillUnmount](docs/component.md#生命周期) [@OnDidUnmount](docs/component.md#生命周期) [@OnDidCatch](docs/component.md#生命周期) |
+| JSON 序列化装饰器 | [@JsonProperty](docs/model.md#jsonproperty-指定-json-键名) [@JsonExpose](docs/model.md#jsonexpose-控制序列化方向) [@JsonIgnore](docs/model.md#jsonignore-忽略属性) [@JsonSerialize](docs/model.md#jsonserialize--jsondeserialize-自定义序列化逻辑) [@JsonDeserialize](docs/model.md#jsonserialize--jsondeserialize-自定义序列化逻辑) [@JsonFormat](docs/model.md#jsonformat-日期格式化) |
+| 数据类型装饰器 | [@Type](docs/model.md#type-指定字段类型) [ArrayType](docs/model.md#arraytype--reactivearraytype) [ReactiveArrayType](docs/model.md#arraytype--reactivearraytype) [@From](docs/model.md#from-复用字段配置) |
+| 元数据操作函数 | [metadata](docs/metadata.md#metadata) [defineMetadata](docs/metadata.md#definemetadata) [defineClassMetadata](docs/metadata.md#defineclassmetadata) [defineFieldMetadata](docs/metadata.md#definefieldmetadata) [getClassMetadataValues](docs/metadata.md#getclassmetadatavalues) [getFieldMetadataValues](docs/metadata.md#getfieldmetadatavalues) |
+| 元数据查询函数 | [getMetadata](docs/metadata.md#getmetadata) [getOwnMetadata](docs/metadata.md#getownmetadata) [getMetadataKeys](docs/metadata.md#getmetadatakeys) [getOwnMetadataKeys](docs/metadata.md#getownmetadatakeys) [hasMetadata](docs/metadata.md#hasmetadata) [hasOwnMetadata](docs/metadata.md#hasownmetadata) [deleteMetadata](docs/metadata.md#deletemetadata) |
+| 兼容 reflect-metadata 函数 | [metadata](docs/metadata.md#metadata) [hasOwnMetadata](docs/metadata.md#hasownmetadata) [getOwnMetadataKeys](docs/metadata.md#getownmetadatakeys) [getOwnMetadata](docs/metadata.md#getownmetadata) [getMetadata](docs/metadata.md#getmetadata) [deleteMetadata](docs/metadata.md#deletemetadata) [defineMetadata](docs/metadata.md#definemetadata) |
+| 模型实例化函数 | [reactive](docs/model.md#reactive-创建响应式实例) [normalize](docs/model.md#normalize-对象规范化) [hydrate](docs/model.md#hydrate-对象水合) |
+| 其他导出 | [nextTick](docs/api.md#nexttick) [state](docs/api.md#state) [computed](docs/api.md#computed) |
+
+---
+
+## 许可证
+
+[MIT](LICENSE)
+
+
+# advanced.md
+
+# 进阶用法
+
+> ⚠️ **本章涵盖构建方式等进阶用法。比较专业，一般人把握不住。**
+
+> 👉 **大多数项目请走 [快速开始](./getting-started.md) 的默认配置，不需要本节的任何操作。**
+
+## 如何配置 experimentalDecorators 类型元数据
+
+参考配置示例：[typescript](https://github.com/linsk1998/vue-clazz-decorator/tree/main/tests/typescript.js) [babel](https://github.com/linsk1998/vue-clazz-decorator/tree/main/tests/babel.js)
+
+配置 `experimentalDecorators: true` 后，由于装饰器的函数签名不同，必须新建一个文件 `shim-vue-clazz-decorator.d.ts` 在其中做类型重载，才能使装饰器的类型推断正常。
+
+```typescript
+// src/shim-vue-clazz-decorator.d.ts // 一般行业内约定补丁类的类型定义文件命名为 shim-*.d.ts
+import 'vue-clazz-decorator';
+declare module 'vue-clazz-decorator' {
+    export interface AutoMethodDecorator<This extends object, Value extends (...args: any[]) => any = any> extends MethodDecorator {}
+    export interface AutoPropertyDecorator<This extends object, Value = any> extends PropertyDecorator {}
+    export interface AutoAccessorDecorator<This extends object, Value = any> extends MethodDecorator {}
+    export interface AutoClassDecorator<This extends object = any> extends ClassDecorator {}
+}
+```
+
+> 如果你在构建时开启 `experimentalDecorators: true` 且用 babel 转译，是不需要这个类型补丁的。
+
+## 如何配置 useDefineForClassFields: false
+
+如果开启 `useDefineForClassFields: false`，这会消除字段定义，导致运行时无法知道这个类有哪些字段。为了在配置 `useDefineForClassFields: false` 后起作用，你需要引入 `typescript-plugin-mark-fields` 或 `babel-plugin-mark-fields`。这2个插件会在构建时，提前知道字段名，并做记号，后续运行时代码就可以知道一个类有哪些字段了。
+
+参考配置示例：[typescript](https://github.com/linsk1998/vue-clazz-decorator/tree/main/tests/typescript.js) [babel](https://github.com/linsk1998/vue-clazz-decorator/tree/main/tests/babel.js)
+
+## 如何配置 emitDecoratorMetadata 类型元数据
+
+TypeScript 开启 `emitDecoratorMetadata` 后，编译器会自动给**有装饰器的字段、方法、构造器参数**标注 `design:type`、`design:paramtypes`、`design:returntype` 三种元数据。
+
+```typescript
+class User {
+    @Reflect.metadata('deco', true)
+    name: string;  // → design:type = String
+
+    @Reflect.metadata('deco', true)
+    age: number;   // → design:type = Number
+
+    @someMethodDeco
+    greet(msg: string, times: number): boolean {
+        return true;
+    }
+    // → design:type = Function
+    // → design:paramtypes = [String, Number]
+    // → design:returntype = Boolean
+}
+
+// 读取自动生成的类型
+Reflect.getMetadata('design:type', User.prototype, 'name');       // String
+Reflect.getMetadata('design:paramtypes', User.prototype, 'greet'); // [String, Number]
+```
+
+参考配置示例：[typescript](https://github.com/linsk1998/vue-clazz-decorator/tree/main/tests/typescript.js) [babel](https://github.com/linsk1998/vue-clazz-decorator/tree/main/tests/babel.js)
+
+---
+
+### 全局函数注入
+
+启用了 `emitDecoratorMetadata` 后，一些装饰器会编译成全局函数调用，如 Reflect.metadata。通常情况下我们要污染全变量来注册。
+
+```javascript
+import { metadata } from "vue-clazz-decorator";
+// BAD
+Reflect.metadata = metadata;
+```
+
+但是，我更推荐用 `@rollup/plugin-inject` 以不污染全局变量的方式，将 `Reflect.metadata` / `Reflect.getMetadata` 的调用自动重定向到本库，无需修改业务代码。还能避免和别的库产生冲突。
+
+```javascript
+const inject = require("@rollup/plugin-inject");
+
+module.exports = {
+    plugins: [
+        inject({
+            modules: {
+                'Reflect.metadata': ["vue-clazz-decorator", 'metadata'],
+                'Reflect.getMetadata': ["vue-clazz-decorator", 'getMetadata'],
+            },
+            include: '这里可以设定生效一个范围',
+        })
+    ]
+};
+```
+
+编译前：
+
+```javascript
+Reflect.metadata('foo', "bar");
+Reflect.getMetadata('design:type', target, 'name');
+```
+
+编译后：
+
+```javascript
+import { metadata } from "vue-clazz-decorator";
+metadata('foo', "bar");
+
+import { getMetadata } from "vue-clazz-decorator";
+getMetadata('design:type', target, 'name');
+```
+
+---
+
+### 类型声明
+
+如需 `Reflect.metadata` / `Reflect.getMetadata` 的 TypeScript 类型（不再依赖 `reflect-metadata` 包），引用本库自带类型声明即可：
+
+```typescript
+/// <reference types="vue-clazz-decorator/types/reflect" />
+```
+
+之后 IDE 即可识别 `Reflect.metadata`、`Reflect.getMetadata`、`Reflect.defineMetadata` 等全局方法。
+
+---
+
+### @Type 可以省略
+
+启用了 `emitDecoratorMetadata` 后，`@Type` 装饰器可以省略——`design:type` 已经记录了运行时类型，`reactive()` 和 `hydrate()` 会自动读取它。
+
+```typescript
+@Model
+class User {
+    @Label("用户名")
+    // 不再需要 @Type(String)
+    name: string;
+
+    @Label("年龄")
+    // 不再需要 @Type(Number)
+    age: number;
+
+    @Label("部门")
+    // 不再需要 @Type(Dept)
+    dept: Dept;
+
+    @Label("角色")
+    // 泛型仍然需要显式标注，TypeScript 不会为泛型生成 design:type
+    @Type(ArrayType(Role))
+    roles: Role[];
+}
+```
+
+> **注意**：`design:type` 只在有装饰器的成员上生成。如果某个字段没有任何注解，请保留 `@Type`。
+
+---
+
+
+# api.md
+
+# API 参考
+
+本文档提供所有公开 API 的签名和参数速查。
+
+> 如果你刚开始使用本库，建议先阅读 [新手上路](getting-started.md) 和 [组件开发](component.md)。
+
+---
+
+## 组件创建
+
+### createComponent
+
+将视图函数和 ViewModel 绑定，生成标准 Vue 组件。
+
+```ts
+function createComponent<T>(
+  template: (props: T) => JSX.Element
+): (props: T) => JSX.Element;
+
+function createComponent<T>(
+  template: (props: T) => JSX.Element,
+  Class: new () => T
+): Component<T>;
+```
+
+| 参数 | 类型 | 说明 |
+| ---- | ---- | ---- |
+| `template` | `(props: T) => JSX.Element` | 视图渲染函数 |
+| `Class` | `new () => T` | 可选，ViewModel 类 |
+
+也支持传入已有的 Vue JSX 组件作为模板：
+
+```tsx
+import { MyExistingComponent } from './somewhere';
+
+const Wrapped = createComponent(MyExistingComponent, MyViewModel);
+```
+
+### useChildren
+
+在视图函数中获取默认插槽内容。
+
+```ts
+function useChildren(): VNode[] | undefined;
+```
+
+### use
+
+在当前 ViewModel 中创建另一个 ViewModel 的实例，实现逻辑复用。
+
+```ts
+function use<T>(Class: new () => T): T;
+```
+
+### reactive
+
+将数据转为响应式实例，可选地绑定数据模型类以保留类型信息。
+
+```ts
+function reactive<T>(data: object, ModelClass?: new () => T): T;
+```
+
+详见 [数据模型](model.md#reactive-创建响应式实例)。
+
+### normalize
+
+将普通数据（一般是后端传来的 JSON）按模型规则规范化，不包含响应性。
+
+```ts
+function normalize<T>(data: object, ModelClass?: new () => T): T;
+```
+
+详见 [数据模型](model.md#normalize-对象规范化)。
+
+### hydrate
+
+将原始数据转换为具有响应式状态、业务逻辑和关联关系的完整内存对象。
+
+```ts
+function hydrate<T>(data: object, ModelClass?: new () => T): T;
+```
+
+详见 [数据模型](model.md#hydrate-对象水合)。
+
+---
+
+## 类装饰器
+
+### @ViewModel
+
+标记类为 ViewModel，处理装饰器元数据。所有方法自动 `bind(this)`。
+
+```ts
+function ViewModel<T extends Function>(
+  Class: T,
+  context?: ClassDecoratorContext
+): T;
+```
+
+### @Model
+
+标记类为数据模型，用于 `reactive()`/`hydrate()`/`normalize()` 绑定。自动注入 `.toJSON()` 方法。
+
+```ts
+function Model<T extends Function>(
+  Class: T,
+  context?: ClassDecoratorContext
+): T;
+```
+
+### @Component
+
+轻量级类装饰器，仅提取 Props 并通过 `use()` 创建实例，不处理渲染模板。适用于需要手动组合的场景。
+
+```ts
+function Component<T extends { new(): T; }>(Class: T, context?: ClassDecoratorContext): {
+  props: string[];
+  setup(props: Record<string, any>): T;
+};
+```
+
+### @Provide
+
+向后代组件提供数据（可用作类装饰器或字段装饰器）。
+
+```ts
+function Provide(key: string | symbol): ClassDecorator & PropertyDecorator;
+```
+
+---
+
+## 字段 / 访问器装饰器
+
+### @State
+
+声明响应式状态（基于 `shallowRef`）。
+
+```ts
+const State: FieldDecorator & AccessorDecorator;
+```
+
+### @Reactive
+
+声明深层响应式状态。
+
+```ts
+const Reactive: FieldDecorator & AccessorDecorator;
+```
+
+### @Prop
+
+声明组件属性。
+
+```ts
+function Prop(): PropertyDecorator;
+function Prop(name: string): PropertyDecorator;
+```
+
+### @ModelValue
+
+声明 v-model 绑定属性。
+
+```ts
+function ModelValue(): PropertyDecorator;
+function ModelValue(name: string): PropertyDecorator;
+```
+
+### @Computed
+
+声明计算属性。
+
+```ts
+const Computed: AccessorDecorator;
+```
+
+### @Ref
+
+获取模板中 DOM 元素引用。
+
+```ts
+function Ref(): PropertyDecorator;
+function Ref(name: string): PropertyDecorator;
+```
+
+### @Inject
+
+注入祖先组件提供的数据。
+
+```ts
+function Inject(): PropertyDecorator;
+function Inject(key: string): PropertyDecorator;
+```
+
+### @Emit
+
+声明触发事件的方法。
+
+```ts
+function Emit(): MethodDecorator;
+function Emit(eventName: string): MethodDecorator;
+```
+
+---
+
+## 生命周期装饰器
+
+| 装饰器 | 签名 | Vue 对应 | 说明 |
+| ------ | ---- | -------- | ---- |
+| `@OnDidCreate` | `MethodDecorator` | — | ViewModel 实例创建后立即执行，早于所有生命周期 |
+| `@OnWillMount` | `MethodDecorator` | `onBeforeMount` | 组件即将挂载 |
+| `@OnDidMount` | `MethodDecorator` | `onMounted` | 组件已经挂载 |
+| `@OnWillUpdate` | `MethodDecorator` | `onBeforeUpdate` | 组件即将更新 |
+| `@OnDidUpdate` | `MethodDecorator` | `onUpdated` | 组件已经更新 |
+| `@OnWillUnmount` | `MethodDecorator` | `onBeforeUnmount` | 组件即将卸载 |
+| `@OnDidUnmount` | `MethodDecorator` | `onUnmounted` | 组件已经卸载 |
+| `@OnDidCatch` | `MethodDecorator` | `onErrorCaptured` | 捕获后代组件错误 |
+
+---
+
+## JSON 序列化装饰器
+
+### @JsonProperty
+
+指定 JSON 序列化时的键名。
+
+```ts
+function JsonProperty(jsonKey: string): PropertyDecorator;
+```
+
+### @JsonExpose
+
+控制序列化方向。
+
+```ts
+function JsonExpose(serialize: boolean, deserialize?: boolean): PropertyDecorator;
+function JsonExpose(options?: { serialize?: boolean; deserialize?: boolean }): PropertyDecorator;
+```
+
+### @JsonIgnore
+
+忽略属性，序列化和反序列化时都忽略。
+
+```ts
+const JsonIgnore: PropertyDecorator;
+```
+
+### @JsonSerialize
+
+自定义序列化逻辑，多个函数采用洋葱模型叠加执行。
+
+```ts
+function JsonSerialize(fn: NextHandleFunction): PropertyDecorator;
+```
+
+### @JsonDeserialize
+
+自定义反序列化逻辑，多个函数采用洋葱模型叠加执行。
+
+```ts
+function JsonDeserialize(fn: NextHandleFunction): PropertyDecorator;
+```
+
+### @JsonFormat
+
+日期格式化，自动注册序列化与反序列化钩子。
+
+```ts
+function JsonFormat(pattern: string, timezone?: number): PropertyDecorator;
+function JsonFormat(shape: NumberConstructor): PropertyDecorator;
+function JsonFormat(options: { pattern: string; timezone?: number }): PropertyDecorator;
+function JsonFormat(options: { shape: NumberConstructor }): PropertyDecorator;
+```
+
+详见 [数据模型](model.md#jsonformat-日期格式化)。
+
+---
+
+## 数据类型装饰器
+
+### @Type
+
+标注字段的运行时类型，`normalize`/`reactive`/`hydrate` 时自动将普通数据转为类型化实例。
+
+```ts
+function Type(type: Function): PropertyDecorator;
+```
+
+### @ArrayType
+
+标注数组字段的元素运行时类型。
+
+```ts
+function ArrayType(type: Function): { new(): any[]; };
+```
+
+### ReactiveArrayType
+
+创建深层响应式数组类型（每个元素也会被 `reactive` 处理）。
+
+```ts
+function ReactiveArrayType(type: Function): { new(): any[]; };
+```
+
+### @From
+
+引用另一个 Model 的某个字段的元数据配置。
+
+```ts
+function From(SourceClass: Function, sourceField: string): PropertyDecorator;
+```
+
+---
+
+## 元数据操作函数
+
+### 类级别元数据
+
+| 函数 | 说明 |
+| ---- | ---- |
+| `defineClassMetadata(Class, key, value)` | 在类上定义元数据 |
+| `getClassMetadataValues(Class)` | 获取类上的所有元数据（含继承） |
+
+### 字段级别元数据
+
+| 函数 | 说明 |
+| ---- | ---- |
+| `defineFieldMetadata(Class, field, key, value)` | 在字段上定义元数据 |
+| `getFieldMetadataValues(Class)` | 获取所有字段的元数据（含继承） |
+
+### 通用元数据操作
+
+| 函数 | 说明 |
+| ---- | ---- |
+| `metadata(key, value)` | 声明元数据的通用装饰器工厂 |
+| `defineMetadata(key, value, target, name?)` | 统一写入入口（按 name 有无分发到类/字段级别） |
+| `getMetadata(key, target, name?)` | 读取元数据（含原型链） |
+| `getOwnMetadata(key, target, name?)` | 读取元数据（仅自身） |
+| `getMetadataKeys(target, name?)` | 获取所有元数据键名（含原型链） |
+| `getOwnMetadataKeys(target, name?)` | 获取所有元数据键名（仅自身） |
+| `hasMetadata(key, target, name?)` | 检查是否存在元数据（含原型链） |
+| `hasOwnMetadata(key, target, name?)` | 检查是否存在元数据（仅自身） |
+| `deleteMetadata(key, target, name?)` | 删除元数据 |
+
+详见 [元数据操作](metadata.md)。
+
+---
+
+## 兼容 reflect-metadata 的函数
+
+与 `reflect-metadata` API 兼容的元数据操作函数，适合迁移项目：
+
+| 函数 | 说明 |
+| ---- | ---- |
+| `metadata(target, key, value)` | 定义元数据（装饰器工厂） |
+| `hasOwnMetadata(key, target)` | 是否存在自身元数据 |
+| `getOwnMetadataKeys(target)` | 获取所有自身元数据 key |
+| `getOwnMetadata(key, target)` | 获取自身元数据 |
+| `getMetadata(key, target)` | 获取元数据（含原型链） |
+| `deleteMetadata(key, target)` | 删除元数据 |
+| `defineMetadata(key, value, target)` | 定义元数据（函数形式） |
+
+---
+
+## 其他导出
+
+### nextTick
+
+从 Vue 重导出的 `nextTick`，方便在 ViewModel 中使用。
+
+```ts
+import { nextTick } from 'vue'; // 重新导出
+```
+
+### state
+
+底层工具函数，创建 `shallowRef` 的 getter/setter 访问器对。
+
+```ts
+function state<T>(initValue: T): { get(): T; set(value: T): void; }
+```
+
+### computed
+
+底层工具函数，创建 Vue `computed` 的 getter/setter 访问器对。
+
+```ts
+function computed<T>(getter: () => T): { get(): T; }
+function computed<T>(getter: () => T, setter: (value: T) => void): { get(): T; set(value: T): void; }
+```
+
+
+# component.md
+
+# Vue Component API
+
+> 基于 Class + Decorator 的 Vue 3 组件开发方案。
+
+---
+
+## createComponent
+
+将视图模板与 ViewModel 绑定，返回 Vue 组件。
+
+```tsx
+function MyView(props: MyViewModel) {
+    return <div>Hello, {props.name}!</div>;
+}
+
+@ViewModel
+class MyViewModel {
+    @Prop
+    public name?: string;
+}
+
+const MyComponent = createComponent(MyView, MyViewModel);
+
+// 使用
+<MyComponent name="World" />
+```
+
+不传 ViewModel 时仅包装模板：
+
+```tsx
+const Simple = createComponent(function() {
+    return <div>Hello!</div>;
+});
+```
+
+传入已有 Vue JSX 组件作为模板：
+
+```tsx
+import { ElDialog } from 'element-plus';
+
+const MyDialog = createComponent(ElDialog, MyDialogViewModel);
+```
+
+---
+
+## @ViewModel
+
+类装饰器，标记 ViewModel。所有方法自动 `bind(this)`。
+
+```ts
+@ViewModel
+class MyViewModel {
+    @State
+    public count = 0;
+
+    public increase() { this.count++; }
+}
+```
+
+> `@ViewModel` 会遍历所有字段元数据，为 `@Computed`、`@Ref`、`@State`、`@Prop`、`@Inject`、`@ModelValue`、`@Reactive` 等装饰的字段创建响应式访问器，将普通属性转化为 Vue 响应式属性。
+
+---
+
+## @State
+
+响应式状态，变化时视图自动更新。
+
+```ts
+@ViewModel
+class MyViewModel {
+    @State
+    public count = 0;
+
+    @State
+    public name: string;  // 未初始化则 undefined
+}
+```
+
+---
+
+## @Reactive
+
+深层响应式状态，适用于对象和数组等需要深度追踪的场景。
+
+```ts
+@Model
+class Config {
+    @Reactive
+    public theme = 'dark';
+
+    @Reactive
+    public lang = 'zh';
+}
+@ViewModel
+class MyViewModel {
+    @Reactive
+    public list: string[] = [];
+
+    @Reactive(Config)
+    public config = { theme: 'dark', lang: 'zh' };
+}
+```
+
+与 `@State` 的区别：
+- `@State` 仅追踪引用变化
+- `@Reactive` 根据提供的类型深度追踪对象内部属性变化
+
+---
+
+## @Prop
+
+父组件传入的只读属性。
+
+```ts
+@ViewModel
+class MyViewModel {
+    @Prop
+    public name?: string;              // prop 名同字段名
+
+    @Prop
+    public count?: number = 0;        // 带默认值
+
+    @Prop('myName')
+    public alias?: string;             // 自定义外部 prop 名
+}
+```
+
+---
+
+## @Computed
+
+计算属性，自动追踪依赖。
+
+```ts
+@ViewModel
+class MyViewModel {
+    @State
+    public count = 0;
+
+    @Computed
+    public get doubleCount() {
+        return this.count * 2;
+    }
+}
+```
+
+支持 setter：
+
+```ts
+@ViewModel
+class MyViewModel {
+    @State
+    private _name = '';
+
+    @Computed
+    public get name() {
+        return this._name;
+    }
+    public set name(value: string) {
+        this._name = value.trim();
+    }
+}
+```
+
+---
+
+## @Ref
+
+获取模板中 DOM 元素引用。
+
+```tsx
+function MyView(props: MyViewModel) {
+    return <button ref="btn" onClick={props.onClick}>Click</button>;
+}
+
+@ViewModel
+class MyViewModel {
+    @Ref
+    public btn: HTMLButtonElement;        // 匹配 ref="btn"
+
+    @Ref('btn')
+    public btn2: HTMLButtonElement;       // 显式指定
+
+    public onClick() { console.log(this.btn.tagName); }
+}
+```
+
+---
+
+## @Emit
+
+事件发射，调用父组件传入的回调。`this` 绑定到 ViewModel。
+
+```tsx
+@ViewModel
+class ButtonViewModel {
+    @Emit
+    public onClick: Function;                    // 自动匹配 onXxx
+
+    @Emit('onCustomEvent')
+    public handleCustomEvent: Function;                    // 自定义事件名
+
+    public handleClick(e) {
+        const result = this.onClick(e);          // 调用回调并获取返回值
+    }
+}
+
+// 父组件
+<Button onClick={function() { return 'result'; }} />
+```
+
+---
+
+## @ModelValue
+
+实现 `v-model` 双向绑定。
+
+```tsx
+@ViewModel
+class InputViewModel {
+    @ModelValue
+    public value = "init";                    // 默认 modelValue
+
+    @ModelValue('title')
+    public title = "";                        // 自定义 prop 名
+}
+
+function InputView(props: InputViewModel) {
+    return <input v-model={props.value} />;
+}
+
+// 父组件
+<Input v-model={parentText} />
+```
+
+---
+
+## @Provide / @Inject
+
+跨层级组件通信。
+
+```ts
+// 提供整个 ViewModel 实例
+@ViewModel
+@Provide('ancestor')
+class AncestorViewModel {
+    public name = 'ancestor';
+}
+
+// 提供单个属性
+@ViewModel
+class ParentViewModel {
+    @Provide('parentName')
+    public name = 'parent';
+}
+
+// 注入
+@ViewModel
+class ChildViewModel {
+    @Inject('ancestor')
+    public ancestor: AncestorViewModel;
+
+    @Inject
+    public parentName: string;               // key 同字段名
+}
+```
+
+配合 `@State` 实现响应式注入：
+
+```ts
+@ViewModel
+class MyViewModel {
+    @Provide('name')
+    @State
+    public name = 'initial';
+}
+// 修改 this.name 后，所有注入方自动更新
+```
+
+---
+
+## @Watch
+
+监听 ViewModel 中状态的变化。
+
+```ts
+@ViewModel
+class ChildViewModel {
+    @State
+    public name = 'initial';
+
+    @Watch('name')          // 监听某个成员，复杂的可以用computed
+    protected onNameChange(newValue: string, oldValue: string) {
+        console.log(`name changed from ${oldValue} to ${newValue}`);
+    }
+    @Watch(inst => inst.name) // 支持以回调的方式获取
+    protected onNameChange(newValue: string, oldValue: string) {
+        console.log(`name changed from ${oldValue} to ${newValue}`);
+    }
+    @Watch(function(){ return this.name }) // 也可以使用this
+    protected onNameChange(newValue: string, oldValue: string) {
+        console.log(`name changed from ${oldValue} to ${newValue}`);
+    }
+}
+```
+
+---
+
+## 生命周期
+
+方法装饰器，对应 Vue 3 生命周期钩子。
+
+| 装饰器           | Vue Hook          | 说明 |
+| ---------------- | ----------------- | ---- |
+| `@OnDidCreate`   | —                 | ViewModel 实例创建后立即执行，早于所有生命周期 |
+| `@OnWillMount`   | `onBeforeMount`   | 组件即将挂载 |
+| `@OnDidMount`    | `onMounted`       | 组件已经挂载 |
+| `@OnWillUpdate`  | `onBeforeUpdate`  | 组件即将更新 |
+| `@OnDidUpdate`   | `onUpdated`       | 组件已经更新 |
+| `@OnWillUnmount` | `onBeforeUnmount` | 组件即将卸载 |
+| `@OnDidUnmount`  | `onUnmounted`     | 组件已经卸载 |
+| `@OnDidCatch`    | `onErrorCaptured` | 捕获后代组件错误 |
+
+```ts
+@ViewModel
+class MyViewModel {
+    @OnDidCreate
+    protected init() { console.log('ViewModel created'); }
+
+    @OnDidMount
+    protected handleMount() { console.log('mounted'); }
+
+    @OnWillUnmount
+    protected cleanup() { console.log('cleanup'); }
+
+    @OnDidCatch
+    protected onError(err: Error) {
+        console.error(err);
+        return false; // 阻止错误向上传播
+    }
+}
+```
+
+> **注意**：`@OnDidCreate` 不是 Vue 生命周期钩子，它在 ViewModel 实例化后同步执行，早于任何 Vue 生命周期。适合做实例初始化逻辑。
+
+---
+
+## 子组件
+
+```tsx
+const Box = createComponent(function() {
+    return <div>{useChildren()}</div>;
+});
+<Box>content</Box>
+```
+
+---
+
+## 装饰器组合
+
+**@Prop + @State** — 外部可传入，内部可修改：
+
+```ts
+@ViewModel
+class MyViewModel {
+    @Prop
+    @State
+    public count: number = 0;
+}
+```
+
+**@Provide + @State** — 响应式跨组件共享：
+
+```ts
+@ViewModel
+class MyViewModel {
+    @Provide('name')
+    @State
+    public name = 'init';
+}
+```
+
+**@Prop + @Inject** — 优先取 Prop，回退到 Inject：
+
+```ts
+@ViewModel
+class MyViewModel {
+    @Prop
+    @Inject('config')
+    public config?: Config;
+}
+```
+
+---
+
+## 装饰器互斥规则
+
+同一字段上以下组合不可混用：
+
+| 装饰器        | 不可与之同用                                                                 |
+| ------------- | ---------------------------------------------------------------------------- |
+| `@Emit`       | `@Computed`, `@ModelValue`, `@State`, `@Reactive`, `@Ref`, `@Prop`, `@Inject`, `@Provide` |
+| `@Computed`   | `@Emit`, `@ModelValue`, `@State`, `@Reactive`, `@Ref`, `@Inject`                          |
+| `@Ref`        | `@Emit`, `@Computed`, `@ModelValue`, `@State`, `@Reactive`, `@Prop`, `@Inject`            |
+| `@ModelValue` | `@Emit`, `@Computed`, `@Ref`, `@State`, `@Reactive`, `@Prop`                              |
+
+允许的合法组合：`@Prop + @State`、`@Prop + @Inject`、`@Provide + @State`、`@Provide + @Prop`。
+
+
+# faq.md
+
+# 常见问题
+
+---
+
+## 一般问题
+
+### 这个项目和 vue-class-component 有什么关系？
+
+`vue-clazz-decorator` 是一个**独立的库**，灵感来源于 Vue 2 的 `vue-class-component` 和 `vue-property-decorator`，但完全为 Vue 3 重新设计。它基于 Vue 3 的原生响应式系统，不依赖任何已废弃的 Vue API。
+
+### 这个项目 内部是 Options API 还是 Composition API？
+
+内部是 Composition API，且在配置 `__VUE_OPTIONS_API__: false` 下通过所有测试。
+
+### 可以和 Options API / Composition API 混用吗？
+
+可以。`createComponent` 生成的就是标准 Vue 组件，可以和其他 API 风格的组件一起使用。
+
+### 支持 Vue 2 吗？
+
+理论上 Vue 2.7 是兼容Vue3 API 的。但本库不保证能用。
+
+### 支持 SFC（单文件组件）吗？
+
+本库的核心模式是 JSX/TSX 视图函数 + ViewModel 类，不依赖 `.vue` SFC 文件。但你可以在同一项目中混用 SFC 和 `createComponent` 创建的组件。
+
+```ts
+import Template from './template.vue';
+
+@ViewModel
+class AppViewModel {
+    @State
+    title = 'Hello';
+}
+const App = createComponent(Template, AppViewModel);
+```
+
+---
+
+## 使用问题
+
+### this 在方法中指向哪里？
+
+ViewModel 中的所有类方法方法会自动绑定到 ViewModel 实例。你可以放心地把 `props.methodName` 传给事件处理器。但是
+
+```ts
+@ViewModel
+class MyViewModel {
+    @State
+    public count = 0;
+
+    // 类方法中，this必然是这个类的实例
+    public increment() { this.count++; }
+
+    // 如果是函数类型的成员变量，不保证this的指向，要看调用方给this传什么值
+    public foo = function() { this.count++; }
+}
+```
+
+### 如何在 ViewModel 中使用 Vue 的 hook 函数？
+
+可以，直接在字段声明中使用。天然带有命名空间。
+
+```ts
+@ViewModel
+class MyViewModel {
+    private router = useRouter();
+    private route = useRoute();
+    private store = useStore();
+}
+```
+
+### Prop 可以传 JSX 吗？
+
+可以。JSX 元素也是普通的 JavaScript 值：
+
+```tsx
+<Dialog header={<h1>标题</h1>} />
+```
+
+### @Prop 和 @State 能同时用吗？
+
+可以，`@Prop + @State` 的效果是 `@State`，初始值从外部接收。
+
+```ts
+@ViewModel
+class MyViewModel {
+    @Prop
+    @State
+    public count: number = 0;
+}
+// 外部可传 <Counter count={5} />
+// 内部可修改 this.count++
+```
+
+### @State 和 @Reactive 有什么区别？
+
+- `@State` 仅追踪引用变化
+- `@Reactive` 根据提供的类型深度追踪对象内部属性变化
+
+```ts
+@ViewModel
+class MyViewModel {
+    @State
+    public count = 0;           // 基本类型用 @State
+
+    @Reactive
+    public list: string[] = []; // 对象/数组用 @Reactive
+}
+```
+
+### reactive、normalize、hydrate 怎么选？
+
+选 hydrate 就得了。
+
+### @OnDidCreate 和构造函数有什么区别？
+
+`@OnDidCreate` 在 `use()` 创建 ViewModel 实例后同步执行，此时：
+- 所有响应式访问器已就绪
+- Props 已注入
+- Inject 数据已可用
+
+而构造函数执行时这些还未初始化。因此需要访问响应式状态或注入数据的初始化逻辑应使用 `@OnDidCreate`。
+
+```ts
+@ViewModel
+class MyViewModel {
+    @Inject('config')
+    public config: Config;
+
+    @OnDidCreate
+    protected init() {
+        // 此时 config 已可用
+        console.log(this.config);
+    }
+}
+```
+
+---
+
+## 装饰器编译问题
+
+按以下清单检查
+- vueJsx 插件是否开启
+- vueJsx 插件是改了顺序
+- typescript 的 target 不能是 esnext
+- 是否开启了 typescript-plugin-mark-fields
+
+---
+
+## 其他
+
+### 如何贡献代码？
+
+欢迎提交 Issue 和 PR。请确保：
+1. 代码通过现有测试
+2. 新增功能附带测试用例
+3. 更新相关文档
+
+### 发现了 Bug 怎么办？
+
+请在 GitHub Issues 中描述：
+- Vue 版本
+- TypeScript / Babel 版本
+- 装饰器语法类型（Experimental 或 Proposal）
+- 最小复现代码
+
+### 项目许可证是什么？
+
+[MIT](LICENSE)
+
+
+# getting-started.md
+
+# 新手上路
+
+本章带你从零开始搭建项目并运行第一个组件。
+
+---
+
+## 环境准备
+
+你需要一个 **Vue 3 + JSX/TSX** 的项目。
+
+### 用 Vite 新建项目（推荐）
+
+```bash
+npm create vite@latest my-app -- --template vue-ts
+cd my-app
+pnpm install
+```
+
+安装 JSX 插件和本库：
+
+```bash
+pnpm add -D @vitejs/plugin-vue-jsx
+pnpm add vue-clazz-decorator
+```
+
+在 `vite.config.ts` 中启用 JSX：
+
+```ts
+import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  plugins: [vue(), vueJsx()],
+});
+```
+
+> 为了让 typescrip t插件编译完，再给 vueJsx 插件编译，需要调整 vueJsx 的执行顺序，后文有详细示例
+
+### 在现有项目中接入
+
+确保项目已使用 Vue 3，且构建工具支持 JSX（Vite、Webpack、Rollup 均可）。
+
+```bash
+pnpm add vue-clazz-decorator
+```
+
+---
+
+## 选择装饰器编译方式
+
+`vue-clazz-decorator` 支持多种装饰器编译方式，一般就用typescript默认配置即可。需要特殊配置的，可以参考[高级用法](./advanced.md)
+
+完整编译示例：
+ + [推荐配置](https://github.com/linsk1998/vue-clazz-decorator/tree/main/tests/vitest.config.js)
+ + [experimental](https://github.com/linsk1998/vue-clazz-decorator/tree/main/tests/vitest.babel-experimental.config.js)
+ + [experimental + emitDecoratorMetadata](https://github.com/linsk1998/vue-clazz-decorator/tree/main/tests/vitest.metadata-babel-experimental.config.js)
+
+---
+
+## 第一个组件
+
+我们写一个计数器，体会 "视图 + ViewModel" 的分离模式。
+
+### 步骤 1：定义 ViewModel
+
+用 `@ViewModel` 标记类，用 `@State` 声明响应式状态：
+
+```ts
+import { ViewModel, State, Computed } from 'vue-clazz-decorator';
+
+@ViewModel
+export class CounterViewModel {
+  @State
+  public count = 0;
+
+  @Computed
+  public get doubleCount() {
+    return this.count * 2;
+  }
+
+  public increment() {
+    this.count++;
+  }
+}
+```
+
+### 步骤 2：写视图函数
+
+视图就是一个普通函数，接收 ViewModel 实例作为参数，返回 JSX：
+
+```tsx
+export function CounterView(props: CounterViewModel) {
+  return (
+    <div>
+      <p>Count: {props.count}</p>
+      <p>Double: {props.doubleCount}</p>
+      <button onClick={props.increment}>+1</button>
+    </div>
+  );
+}
+```
+
+### 步骤 3：绑定成组件
+
+```ts
+import { createComponent } from 'vue-clazz-decorator';
+
+export const Counter = createComponent(CounterView, CounterViewModel);
+```
+
+### 步骤 4：使用
+
+```tsx
+import { Counter } from './Counter';
+
+function App() {
+  return (
+    <div>
+      <h1>我的应用</h1>
+      <Counter />
+    </div>
+  );
+}
+```
+
+---
+
+## 带 Props 的组件
+
+让父组件向子组件传入数据：
+
+```tsx
+@ViewModel
+class GreetingViewModel {
+  @Prop name = 'Guest';
+}
+
+function GreetingView(props: GreetingViewModel) {
+  return <h1>Hello, {props.name}!</h1>;
+}
+
+export const Greeting = createComponent(GreetingView, GreetingViewModel);
+```
+
+使用：
+
+```tsx
+<Greeting name="World" />
+```
+
+---
+
+## 纯模板组件（无 ViewModel）
+
+如果组件没有自己的状态，可以只传视图函数：
+
+```tsx
+import { createComponent } from 'vue-clazz-decorator';
+
+export const Hello = createComponent(function Hello() {
+  return <div>Hello, World!</div>;
+});
+```
+
+---
+
+## 下一步
+
+- 想了解所有装饰器的详细用法？阅读 [组件开发](component.md)
+- 想了解元数据的增删改查？阅读 [元数据操作](metadata.md)
+- 想了解数据模型的序列化/反序列化？阅读 [数据模型](model.md)
+- 想了解构建配置和进阶用法？阅读 [进阶用法](advanced.md)
+- 想快速查找 API 签名？阅读 [API 参考](api.md)
+- 遇到问题？阅读 [常见问题](faq.md)
+
+
+# metadata.md
+
+# Metadata API
+
+> 基于 `Symbol.metadata` 的元数据系统，用于自定义装饰器的数据存取。
+
+---
+
+## metadata
+
+通用装饰器工厂，是所有装饰器的底层实现。
+
+```ts
+const MyDecorator = metadata('myKey', 'myValue');
+
+@ViewModel
+class MyClass {
+    @MyDecorator
+    public field: string;
+}
+
+getMetadata('myKey', MyClass, 'field'); // => 'myValue'
+```
+
+### 自定义装饰器
+
+利用 `metadata()` 装饰器工厂，可以轻松创建自定义装饰器：
+
+```tsx
+import { metadata, getFieldMetadataValues, ViewModel, State, createComponent } from 'vue-clazz-decorator';
+
+// 创建自定义装饰器
+const Label = (text: string) => metadata('label', text);
+const Required = metadata('required', true);
+const Readonly = metadata('readonly', true);
+
+@ViewModel
+class FormViewModel {
+    @Label('用户名')
+    @Required
+    @State
+    public username = '';
+
+    @Label('备注')
+    @Readonly
+    @State
+    public remark = '';
+}
+
+// 运行时读取元数据，生成表单
+function FormView(props: FormViewModel) {
+    const meta = getFieldMetadataValues(FormViewModel);
+    return <form>
+        {Object.entries(meta).map(([key, config]) => (
+            <div key={key}>
+                <label>{config.label}</label>
+                <input
+                    value={props[key]}
+                    onInput={(e) => { props[key] = e.target.value; }}
+                    required={!!config.required}
+                    readOnly={!!config.readonly}
+                />
+            </div>
+        ))}
+    </form>;
+}
+```
+---
+
+## defineMetadata
+
+统一写入入口，按是否传 `name` 自动分发到类或字段级别。
+
+```ts
+defineMetadata('version', '1.0', MyClass);              // 类级别
+defineMetadata('label', 'Name', MyClass, 'name');       // 字段级别
+```
+
+---
+
+## getMetadata
+
+读取元数据，**沿原型链向上查找**。
+
+```ts
+getMetadata('version', MyClass);           // 类级别
+getMetadata('label', MyClass, 'name');     // 字段级别
+getMetadata('version', myInstance);        // 从实例读取
+```
+
+---
+
+## getOwnMetadata
+
+读取元数据，**仅当前类自身**，不查原型链。
+
+```ts
+getOwnMetadata('version', MyClass);
+getOwnMetadata('label', MyClass, 'name');
+```
+
+---
+
+## getMetadataKeys
+
+获取类或字段上所有元数据的键名，**沿原型链向上查找**。
+
+```ts
+getMetadataKeys(MyClass);              // => ['version', ...]
+getMetadataKeys(MyClass, 'name');      // => ['label', ...]
+```
+
+---
+
+## getOwnMetadataKeys
+
+获取当前类/字段上所有元数据的键名，**仅自身，不含原型链**。
+
+```ts
+getOwnMetadataKeys(MyClass);              // => ['version']
+getOwnMetadataKeys(MyClass, 'name');      // => ['label']
+```
+
+---
+
+## hasMetadata
+
+检查是否存在指定元数据，**沿原型链向上查找**。
+
+```ts
+hasMetadata('version', MyClass);        // => true
+hasMetadata('label', MyClass, 'name');  // => true
+```
+
+---
+
+## hasOwnMetadata
+
+检查是否存在指定元数据，**仅当前类自身**。
+
+```ts
+hasOwnMetadata('version', MyClass);        // => true
+hasOwnMetadata('label', MyClass, 'name');  // => true
+```
+
+---
+
+## deleteMetadata
+
+删除指定元数据，返回是否删除成功。
+
+```ts
+deleteMetadata('version', MyClass);         // => true
+deleteMetadata('label', MyClass, 'name');   // => true
+```
+
+---
+
+## defineClassMetadata
+
+在类级别定义元数据。
+
+```ts
+defineClassMetadata(Class, 'version', '1.0');
+```
+
+---
+
+## defineFieldMetadata
+
+在字段级别定义元数据。
+
+```ts
+defineFieldMetadata(Class, 'name', 'label', '用户名');
+```
+
+---
+
+## getClassMetadataValues
+
+获取类的所有元数据（含继承），子类优先。
+
+```ts
+getClassMetadataValues(MyClass);
+// => { version: '1.0', ... }
+```
+
+---
+
+## getFieldMetadataValues
+
+获取所有字段的元数据（含继承），子类优先。
+
+```ts
+getFieldMetadataValues(MyViewModel);
+// => {
+//     name:  { prop: undefined },
+//     count: { state: true }
+// }
+```
+
+---
+
+## 继承
+
+元数据支持原型链继承，查找时子类优先：
+
+```ts
+class Base {
+    @Prop
+    public name: string;
+}
+
+class Child extends Base {
+    @State
+    public count = 0;
+}
+
+getMetadata('prop', Child, 'name');    // => 从 Base 继承找到
+getOwnMetadata('prop', Child, 'name'); // => undefined（Child 自身没有）
+hasMetadata('prop', Child, 'name');    // => true（沿原型链找到）
+getFieldMetadataValues(Child);          // => { name: {prop}, count: {state} }
+```
+
+
+# model.md
+
+# 数据模型
+
+数据模型层提供了一套完整的对象序列化/反序列化/类型转换体系。
+
+---
+
+## @Model 声明一个模型
+
+`@Model` 会自动注入 `.toJSON()` 方法，`JSON.stringify(instance)` 时按 `@JsonProperty`、`@JsonIgnore`、`@JsonExpose`、`@JsonSerialize`、`@JsonFormat` 等规则序列化。
+
+```typescript
+@Model
+export class UserBo {
+    @metadata('label', "用户ID")
+    public id: string;
+
+    @metadata('label', "用户名")
+    public name: string;
+}
+```
+
+> 未加 `@Model` 的类在 `reactive()`/`hydrate()`/`normalize()` 中会收到警告提示。
+
+---
+
+## reactive 创建响应式实例
+
+将普通数据按模型规则转为**响应式**类型化实例。所有成员（无论是否有 `@State`/`@Reactive`/`@Computed` 装饰器）都会被视为响应式。
+
+```typescript
+var user = reactive({ id: "admin", name: "管理员" }, UserBo);
+user.id;           // "admin"
+user.id = "root";  // 视图自动更新
+```
+
+**特性：**
+- 基于字段元数据自动进行类型转换（`@Type`）
+- 支持反序列化钩子（`@JsonDeserialize`、`@JsonFormat` 等）
+- 支持计算属性（`@Computed`）
+- 所有字段默认都是响应式的
+- 对已经是 `reactive` 创建的实例再次调用会直接返回原实例
+
+**支持数组：**
+
+```typescript
+var users = reactive([{ id: "1" }, { id: "2" }], ArrayType(UserBo));
+```
+
+---
+
+## normalize 对象规范化
+
+将普通数据（一般是后端传来的 JSON）按模型规则**一次性**规范化。不包含响应性，后续赋值不会自动转化类型。
+
+```typescript
+var user = normalize({ id: "admin", name: "管理员" }, UserBo);
+```
+
+**特性：**
+- 执行反序列化钩子（洋葱模型）
+- 执行 `@Type` 类型转换
+- 纯数据对象，无响应式代理开销
+- 适合不依赖 Vue 响应式的场景（如 Node.js 端、Web Worker）
+
+**与 `reactive` 的区别：**
+
+| 特性 | `normalize` | `reactive` |
+| ---- | ----------- | ---------- |
+| 响应式 | 无 | 有 |
+| 类型转换 | 有 | 有 |
+| 计算属性 | 无 | 有 |
+| 后续赋值自动转化 | 无 | 有（配合 `@Type`） |
+| 适用场景 | 纯数据处理 | Vue 组件 |
+
+**支持数组：**
+
+```typescript
+var users = normalize([{ id: "1" }, { id: "2" }], ArrayType(UserBo));
+```
+
+---
+
+## hydrate 对象水合
+
+将后端返回或字面量的"干瘪的"原始数据，转换成"饱满的"具有**响应式状态**、**业务逻辑**和**关联关系**的内存对象。
+
+```typescript
+var user = hydrate({ id: "admin", name: "管理员" }, UserBo);
+```
+
+**特性：**
+- 执行反序列化钩子
+- 执行 `@Type` 类型转换
+- `@State`/`@Reactive` 字段为响应式
+- `@Computed` 字段为计算属性
+- 方法自动 `bind(this)`
+- 后续赋值自动触发类型转换（配合 `@Type`）
+
+**与 `reactive`/`normalize` 的区别：**
+
+| 特性 | `normalize` | `reactive` | `hydrate` |
+| ---- | ----------- | ---------- | --------- |
+| 响应式 | 无 | 全部字段 | 仅标注字段 |
+| 计算属性 | 无 | 有 | 有 |
+| 类型转换 | 有 | 有 | 有 |
+| 后续赋值自动转化 | 无 | 有 | 有 |
+| 方法绑定 | 无 | 有 | 有 |
+
+**支持数组：**
+
+```typescript
+var users = hydrate([{ id: "1" }, { id: "2" }], ArrayType(UserBo));
+```
+
+---
+
+## @JsonProperty 指定 JSON 键名
+
+将字段的 JSON 键名与类属性名解耦。
+
+```typescript
+@Model
+export class UserBo {
+    @JsonProperty("user_name")
+    public name: string;
+}
+// JSON 中对应 "user_name"，实例中访问 .name
+```
+
+序列化时 `name` 会输出为 `user_name`，反序列化时 `user_name` 会映射到 `name`。
+
+---
+
+## @JsonExpose 控制序列化方向
+
+控制字段在序列化和/或反序列化时是否参与。
+
+```typescript
+@Model
+class MyClass {
+    @JsonExpose()                                // 序列化和反序列化都开启（默认）
+    public field1: string;
+
+    @JsonExpose(false)                           // 仅反序列化，不生成JSON
+    public field2: string;
+
+    @JsonExpose({ serialize: false })            // 仅反序列化
+    public field3: string;
+
+    @JsonExpose({ deserialize: false })          // 仅序列化
+    public field4: string;
+
+    @JsonExpose(true, false)                     // 仅序列化（位置参数形式）
+    public field5: string;
+}
+```
+
+---
+
+## @JsonIgnore 忽略属性
+
+加在字段或 Getter/Setter 上，序列化和反序列化时都忽略该属性。
+
+```typescript
+@Model
+class MyClass {
+    @JsonIgnore
+    public internalId: string;
+}
+```
+
+---
+
+## @JsonSerialize / @JsonDeserialize 自定义序列化逻辑
+
+为字段注册自定义的序列化/反序列化函数，多个函数采用**洋葱模型**叠加执行。
+
+```typescript
+@Model
+class MyClass {
+    @JsonSerialize((value, metadata, next) => {
+        return next(value.toUpperCase());
+    })
+    @JsonDeserialize((value, metadata, next) => {
+        return next(value.trim());
+    })
+    public name: string;
+}
+```
+
+**洋葱模型执行流程：**
+
+```
+输入 → fn3 → fn2 → fn1 → next(原始值) → fn1返回 → fn2返回 → fn3返回 → 输出
+```
+
+- `value`：当前值
+- `metadata`：字段的元数据配置
+- `next`：调用下一个处理函数，传入处理后的值
+
+---
+
+## @JsonFormat 日期格式化
+
+自动注册序列化与反序列化钩子，处理 `Date` 与格式化字符串/时间戳之间的互转。
+
+### 日期字符串模式
+
+```typescript
+@Model
+class MyClass {
+    @JsonFormat("yyyy-MM-dd HH:mm:ss")                    // Date ↔ "2023-06-15 15:30:45"
+    public createdAt: Date;
+
+    @JsonFormat("yyyy-MM-dd HH:mm:ss", +8)                // 东八区
+    public updatedAt: Date;
+
+    @JsonFormat({ pattern: "yyyy-MM-dd HH:mm:ss" })        // 省略时区 → 本地时间
+    public openedAt: Date;
+
+    @JsonFormat({ pattern: "yyyy-MM-dd HH:mm:ss", timezone: +8 })  // 指定时区偏移
+    public closedAt: Date;
+}
+```
+
+序列化时 `Date` 转为格式化的日期字符串，反序列化时将符合格式的字符串解析为 `Date`。不匹配格式的字符串解析后为无效 `Date`。
+
+> 这里的 pattern 是 [SimpleDateFormat](https://www.npmjs.com/package/java.text.simple-date-format) 的格式。如果没有使用 JsonFormat 不会额外引入日期解析库。
+
+### 时间戳模式
+
+```typescript
+@Model
+class MyClass {
+    @JsonFormat(Number)                  // Date ↔ 毫秒时间戳
+    public timestamp: Date;
+
+    @JsonFormat({ shape: Number })       // 对象形式
+    public timestamp2: Date;
+}
+```
+
+序列化时 `Date` 转为时间戳数字，反序列化时将数字转为 `Date`。
+
+> JsonFormat 是序列化与反序列化用的。不是时间展示用的注解。
+
+---
+
+## @From 复用字段配置
+
+引用另一个 Model 的某个字段的元数据配置。`@From` 先提供基础元数据，后续装饰器可覆盖。
+
+```typescript
+@Model
+export class Dept {
+    @metadata('label', "部门ID")
+    public id: string;
+
+    @metadata('label', "部门名称")
+    public name: string;
+}
+
+@Model
+export class User {
+    @metadata('label', "用户ID")
+    public id: string;
+
+    @metadata('label', "用户名")
+    public name: string;
+
+    @From(Dept, 'id')
+    public deptId: string;           // 复用 Dept.id 的元数据（label: "部门ID"）
+
+    @From(Dept, 'name')
+    public deptName: string;         // 复用 Dept.name 的元数据（label: "部门名称"）
+
+    @From(Dept, 'id')
+    @metadata('label', "自定义标签")  // 覆盖 From 提供的 label
+    public customDeptId: string;
+}
+```
+
+> `@From` 会沿原型链向上查找源类的字段元数据，子类中已有的 key 不会被覆盖。
+
+---
+
+## @Type 指定字段类型
+
+声明嵌套对象或数组的元素类型。`@Type` 在 `normalize`/`reactive`/`hydrate` 反序列化和字段赋值时都生效，自动将普通数据转为类型化实例。
+
+```typescript
+@Model
+export class Dept {
+    @metadata('label', "部门ID")
+    public deptId: string;
+
+    @metadata('label', "部门名称")
+    public deptName: string;
+}
+
+@Model
+export class Role {
+    @metadata('label', "角色ID")
+    public roleId: string;
+
+    @metadata('label', "角色名称")
+    public roleName: string;
+}
+
+@Model
+export class User {
+    @metadata('label', "用户ID")
+    public id: string;
+
+    @metadata('label', "用户名")
+    public name: string;
+
+    @metadata('label', "部门")
+    @Type(Dept)
+    public dept: Dept;               // 赋值时自动转为 Dept 实例
+
+    @metadata('label', "角色")
+    @Type(ArrayType(Role))
+    public roles: Role[];            // 每个元素自动转为 Role 实例
+}
+```
+
+```typescript
+var user = normalize({ dept: { deptId: "d1", deptName: "技术部" } }, User);
+user.dept instanceof Dept;  // true
+
+user.roles = [{ roleId: "r1", roleName: "管理员" }];
+user.roles.at(0) instanceof Role;  // true
+```
+
+---
+
+## ArrayType / ReactiveArrayType
+
+### ArrayType
+
+创建类型化数组类，用于 `@Type` 标注数组字段的元素类型。
+
+```typescript
+@Model
+class MyClass {
+    @Type(ArrayType(Role))
+    public roles: Role[];
+}
+```
+
+### ReactiveArrayType
+
+创建深层响应式数组类型，与 `ArrayType` 类似，但数组元素的操作是带有响应性的。
+
+```typescript
+@Model
+class MyClass {
+    @Type(ReactiveArrayType(Role))
+    public roles: Role[];
+}
+```
+
+---
+
+## 完整示例
+
+```typescript
+import {
+    Model, metadata, Type, ArrayType,
+    JsonProperty, JsonIgnore, JsonFormat,
+    JsonSerialize, JsonDeserialize, JsonExpose,
+    reactive, normalize, hydrate, From
+} from 'vue-clazz-decorator';
+
+@Model
+export class Dept {
+    @metadata('label', "部门ID")
+    public deptId: string;
+
+    @metadata('label', "部门名称")
+    public deptName: string;
+}
+
+@Model
+export class Role {
+    @metadata('label', "角色ID")
+    public roleId: string;
+
+    @metadata('label', "角色名称")
+    @JsonIgnore
+    public roleName: string;
+}
+
+@Model
+export class User {
+    @metadata('label', "用户ID")
+    @JsonProperty("user_id")
+    public id: string;
+
+    @metadata('label', "用户名")
+    @JsonSerialize((v, _, next) => next(v?.trim()))
+    @JsonDeserialize((v, _, next) => next(v?.trim()))
+    public name: string;
+
+    @metadata('label', "创建时间")
+    @JsonFormat("yyyy-MM-dd HH:mm:ss", +8)
+    public createdAt: Date;
+
+    @metadata('label', "部门")
+    @Type(Dept)
+    public dept: Dept;
+
+    @metadata('label', "角色列表")
+    @Type(ArrayType(Role))
+    public roles: Role[];
+
+    @JsonExpose({ serialize: false })
+    public password: string;
+}
+
+// 使用 normalize（无响应式）
+const user = normalize({
+    user_id: "u1",
+    name: "  Admin  ",
+    createdAt: "2024-01-15 10:30:00",
+    dept: { deptId: "d1", deptName: "技术部" },
+    roles: [{ roleId: "r1", roleName: "管理员" }],
+    password: "secret"
+}, User);
+
+user.id;              // "u1"
+user.name;            // "Admin"（经过 trim）
+user.createdAt;       // Date 对象
+user.dept;            // Dept 实例
+user.roles[0];        // Role 实例
+
+// 序列化（password 不参与，roleName 被忽略）
+JSON.stringify(user);
+// {"user_id":"u1","name":"Admin","createdAt":"2024-01-15 10:30:00","dept":{...},"roles":[{"roleId":"r1"}]}
+```

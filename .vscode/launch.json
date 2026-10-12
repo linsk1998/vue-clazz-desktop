@@ -1,0 +1,32 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Vitest: Current File",
+			"type": "node",
+			"request": "launch",
+			"runtimeArgs": [
+				"${workspaceFolder}/node_modules/vitest/vitest.mjs",
+				"${file}",
+				"-c",
+				"vitest.config.js",
+				"--watch=false",
+				"--mode=babel",
+				"--test-timeout=0"
+			],
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"skipFiles": [
+				"<node_internals>/**"
+			]
+		},
+		{
+			"name": "Launch Chrome",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost:3000",
+			"webRoot": "${workspaceFolder}",
+			"sourceMaps": true
+		}
+	]
+}

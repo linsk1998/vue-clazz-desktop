@@ -1,0 +1,15 @@
+.sidebar-indicator {
+	font-family: FontAwesome;
+	font-style: normal;
+	font-weight: normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.sidebar-menu .sidebar-indicator:before {
+	content: "\f078";
+}
+
+.sidebar-submenu .sidebar-indicator:before {
+	content: "\f107";
+}
