@@ -60,7 +60,8 @@ function withClassStyle(child: VNode, extraClass: string, extraStyle: Record<str
  */
 export function Layout(props: LayoutProps) {
 	var classList: string[] = [];
-	var { fill } = props;
+	var { class: className, style, fill } = props;
+	if(className) classList.push(className);
 	if(fill) {
 		classList.push("layout-full");
 	}
@@ -100,7 +101,7 @@ export function Layout(props: LayoutProps) {
 			}
 			return null;
 		}).filter(Boolean);
-		return <div class={classList.join(" ")} style={props.style}>{items}</div>;
+		return <div class={classList.join(" ")} style={style}>{items}</div>;
 	} else if(layoutH) {
 		classList.push("row-flex");
 		let hasContent = false;
@@ -139,6 +140,6 @@ export function Layout(props: LayoutProps) {
 			return null;
 		}).filter(Boolean);
 		items.sort((a, b) => orderMap.get(a.type) - orderMap.get(b.type));
-		return <div class={classList.join(" ")} style={props.style}>{items}</div>;
+		return <div class={classList.join(" ")} style={style}>{items}</div>;
 	}
 }

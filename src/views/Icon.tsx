@@ -2,8 +2,8 @@ import type { CSSProperties } from "vue";
 import { useChildren } from "vue-clazz-decorator";
 
 /** @internal 默认渲染实现，可通过 {@link iconSetup} 替换。 */
-var renderIcon = function(iconName: string, className: string, arialabel?: string) {
-	return <i key={iconName} class={className + ' fa fa-' + iconName} aria-hidden="true" aria-label={arialabel || iconName} />;
+var renderIcon = function(iconName: string, className: string, style: CSSProperties, arialabel?: string) {
+	return <i key={iconName} class={className + ' fa fa-' + iconName} style={style} aria-hidden="true" aria-label={arialabel || iconName} />;
 };
 
 /**
@@ -68,9 +68,10 @@ export interface IconProps {
  * ```
  */
 export function Icon(props: IconProps) {
-	const { fw, position, size, rotate, flip, spin, 'aria-label': arialabel } = props;
+	const { class: className, style, fw, position, size, rotate, flip, spin, 'aria-label': arialabel } = props;
 	const children = useChildren();
 	let classList = ["icon"];
+	if(className) classList.push(className);
 	if(fw) classList.push("icon-fw");
 	if(position) classList.push("icon-" + position);
 	if(size) classList.push("icon-" + size);
@@ -83,5 +84,5 @@ export function Icon(props: IconProps) {
 			classList.push("icon-spin");
 		}
 	}
-	return renderIcon(children[0].children as string, classList.join(' '), arialabel);
+	return renderIcon(children[0].children as string, classList.join(' '), style, arialabel);
 }

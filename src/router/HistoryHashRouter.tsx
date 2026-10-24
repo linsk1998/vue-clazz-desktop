@@ -1,7 +1,9 @@
 import type { Component } from "vue";
 import { createComponent, OnDidCreate, OnDidUnmount, Prop, Provide, State, ViewModel } from "vue-clazz-decorator";
-import { Route, type RouteRecordRaw } from "./Route";
+import { Route, type RouteCallback, type RouteRecordRaw } from "./Route";
 import { fullPath, type Router } from "./Router";
+
+
 
 /** `<HistoryHashRouter>` 的 props。 */
 export interface HistoryHashRouterProps {
@@ -11,6 +13,8 @@ export interface HistoryHashRouterProps {
 	loadingComponent?: Component;
 	/** 懒加载失败时展示的组件，透传给内部 `<Route>`。 */
 	errorComponent?: Component;
+	/** 路径变更回调。 */
+	onRouteChange?: RouteCallback;
 }
 
 function isHistoryAPISupported(): boolean {
@@ -37,6 +41,9 @@ export class HistoryHashRouterVM implements Router {
 	/** @internal */
 	@Prop
 	public readonly errorComponent?: Component;
+	/** @internal */
+	@Prop
+	public readonly onRouteChange?: RouteCallback;
 	/** 当前路径，取自 location.hash。 */
 	@State
 	public path: string = "/";
@@ -127,7 +134,13 @@ export class HistoryHashRouterVM implements Router {
 
 /** `<HistoryHashRouter>` 的渲染函数（内部使用）。 */
 export function HistoryHashRouterView(vm: HistoryHashRouterVM) {
-	return <Route path={vm.path} routes={vm.routes} loadingComponent={vm.loadingComponent} errorComponent={vm.errorComponent} />;
+	return <Route
+		path={vm.path}
+		routes={vm.routes}
+		loadingComponent={vm.loadingComponent}
+		errorComponent={vm.errorComponent}
+		onRouteChange={vm.onRouteChange}
+	/>;
 }
 
 /** 基于 location.hash 的路由组件，路径存于 hash，支持 history API 时产生历史。 */

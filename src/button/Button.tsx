@@ -74,6 +74,10 @@ export class ButtonVM {
 	public get disabled() {
 		return this.contextDisabled || this.propDisabled;
 	}
+	@Prop('class')
+	public className: string;
+	@Prop
+	style?: CSSProperties;
 	@Prop
 	public block: boolean;
 	@Prop
@@ -112,10 +116,11 @@ export class ButtonVM {
 }
 
 export function ButtonView(props: ButtonVM) {
-	const { block, shape, type, size, outline, icon, nativeType, badge, title, disabled, loading } = props;
+	const { className, style, block, shape, type, size, outline, icon, nativeType, badge, title, disabled, loading } = props;
 	const { pending } = props.action;
 	const children = useChildren();
 	const classList = ['btn'];
+	if(className) classList.push(className);
 	if(block) {
 		classList.push('btn-block');
 	}
@@ -157,6 +162,7 @@ export function ButtonView(props: ButtonVM) {
 	return <button
 		type={nativeType}
 		class={classList.join(' ')}
+		style={style}
 		title={title}
 		onClick={props.handleClick}
 		disabled={loading || disabled || pending}

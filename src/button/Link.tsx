@@ -36,6 +36,10 @@ export interface LinkProps {
 
 @ViewModel
 export class LinkVM {
+	@Prop('class')
+	public className?: string;
+	@Prop
+	style?: CSSProperties;
 	@Prop
 	public href?: string;
 	@Prop
@@ -57,7 +61,11 @@ export class LinkVM {
 	public action = use(Action);
 
 	public handleOnClick(event: MouseEvent) {
-		if(this.disabled || !this.onClick) {
+		if(!this.onClick) {
+			return;
+		}
+		event.preventDefault();
+		if(this.disabled) {
 			return;
 		}
 		this.action.execute(this.onClick, [{
@@ -70,9 +78,10 @@ export class LinkVM {
 }
 
 export function LinkView(props: LinkVM) {
-	var { href, type, disabled, icon, noUnderline, action } = props;
+	var { className, style, href, type, disabled, icon, noUnderline, action } = props;
 	var children = useChildren();
 	var classList = ["link"];
+	if(className) classList.push(className);
 	if(type) {
 		classList.push("link-" + type);
 	} else {
@@ -89,6 +98,7 @@ export function LinkView(props: LinkVM) {
 		draggable={false}
 		class={classList.join(' ')}
 		onClick={props.handleOnClick}
+		style={style}
 	>
 		{icon ?
 			<Icon>{icon}</Icon> :

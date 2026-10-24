@@ -27,14 +27,22 @@ export interface AsideProps {
  * ```
  */
 export function Aside(props: AsideProps) {
-	var { scrollX, scrollY, width } = props;
+	var { class: className, style, scrollX, scrollY, width } = props;
 	var classList = ["col-aside"];
+	if(className) classList.push(className);
 	if(scrollX) {
 		classList.push("overflow-x-auto");
 	}
 	if(scrollY) {
 		classList.push("overflow-y-auto");
 	}
+	if(width) {
+		if(style) {
+			style = { ...style, width };
+		} else {
+			style = { width };
+		}
+	}
 	const children = useChildren();
-	return <div class={classList.join(" ")} style={width ? { width } : null}>{children}</div>;
+	return <div class={classList.join(" ")} style={style}>{children}</div>;
 }

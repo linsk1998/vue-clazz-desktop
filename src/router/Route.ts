@@ -22,6 +22,10 @@ export interface RouteRecordRaw {
 	component?: OptionsComponent | VueJsxComponent<any> | RouteLoadComponent;
 };
 
+export interface RouteCallback {
+	(args: RouteVM): any;
+}
+
 /** `<Route>` 组件的 props。 */
 export interface RouteProps {
 	/** 要展示的路径，以“/”开头 */
@@ -32,6 +36,8 @@ export interface RouteProps {
 	loadingComponent?: Component;
 	/** 懒加载失败时展示的组件。 */
 	errorComponent?: Component;
+	/** 路径变更回调。 */
+	onRouteChange?: RouteCallback;
 }
 
 /**
@@ -49,6 +55,14 @@ export class RouteVM {
 	/** 外部传入的 path prop，作为本 Route 匹配的基准路径。 */
 	@Prop('path')
 	public propPath: string;
+	/** 从顶层 Route 到当前的完整路径。 */
+	@Computed
+	public get fullPath(): string {
+		if(this.route) {
+			return this.route.fullPath;
+		}
+		return this.propPath;
+	}
 	/** 当前 Route 用于匹配的路径（已扣除祖先路径）。 */
 	@Computed
 	public get computedPath(): string {
@@ -61,11 +75,6 @@ export class RouteVM {
 			}
 		}
 		return this.fullPath.substring(this.route.path.length);
-	}
-	/** 从顶层 Route 到当前的完整路径。 */
-	@Computed
-	public get fullPath(): string {
-		return this.route ? this.route.fullPath : this.computedPath;
 	}
 
 	@Provide
@@ -120,14 +129,19 @@ export class RouteVM {
 	private get path() {
 		const matchedRouteRecordRaw = this.routesComputed[this.index];
 		if(this.route) {
-			return this.route.path + matchedRouteRecordRaw.path;
+			return this.route.path + '/' + matchedRouteRecordRaw.path;
 		}
-		return matchedRouteRecordRaw.path;
+		return '/' + matchedRouteRecordRaw.path;
 	}
 	/** 当前路由匹配到的路径参数（如 :id 对应的值）。 */
 	@Computed
 	public get params() {
 		return this.matchedResult[1];
+	}
+	@Computed
+	public get meta() {
+		const matchedRouteRecordRaw = this.routesComputed[this.index];
+		return matchedRouteRecordRaw.meta;
 	}
 	/** 匹配的路由组件
 	 * @internal
@@ -139,6 +153,9 @@ export class RouteVM {
 			return null;
 		}
 		var Component = matchedRouteRecordRaw.component as OptionsComponent | RouteLoadComponent;
+		if(!Component) {
+			return h(Route);
+		}
 		if(typeof Component !== 'function') {
 			return h(Component);
 		}
@@ -152,10 +169,14 @@ export class RouteVM {
 		return h(AsyncComponent);
 	}
 
+	@Prop
+	private onRouteChange: RouteCallback;
+
 	@Watch('routeView')
-	protected onRouteChange() {
+	protected handleRouteChange() {
 		this.abortController.abort();
 		this.abortController = new AbortController();
+		this.onRouteChange?.(this);
 	}
 }
 

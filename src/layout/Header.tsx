@@ -27,14 +27,22 @@ export interface HeaderProps {
  * ```
  */
 export function Header(props: HeaderProps) {
-	var { scrollX, scrollY, height } = props;
+	var { class: className, style, scrollX, scrollY, height } = props;
 	var classList = ["row-shrink"];
+	if(className) classList.push(className);
 	if(scrollX) {
 		classList.push("overflow-x-auto");
 	}
 	if(scrollY) {
 		classList.push("overflow-y-auto");
 	}
+	if(height) {
+		if(style) {
+			style = { ...style, height };
+		} else {
+			style = { height };
+		}
+	}
 	const children = useChildren();
-	return <div class={classList.join(" ")} style={height ? { height } : null}>{children}</div>;
+	return <div class={classList.join(" ")} style={style}>{children}</div>;
 }

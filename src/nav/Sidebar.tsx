@@ -1,4 +1,5 @@
 import { useChildren } from "vue-clazz-decorator";
+import { PlainButton, type PlainButtonCallback } from "../button/PlainButton";
 import { JAVASCRIPT_VOID_0 } from "../constant/JAVASCRIPT_VOID_0";
 
 /**
@@ -57,6 +58,8 @@ export interface SidebarBrandProps {
 	href?: string;
 	/** Logo 图片地址 */
 	logo: string;
+	/** 点击事件 */
+	onClick?: PlainButtonCallback<MouseEvent>;
 }
 
 /**
@@ -72,13 +75,13 @@ export interface SidebarBrandProps {
 export function SidebarBrand(props: SidebarBrandProps) {
 	const { logo, href } = props;
 	const children = useChildren();
-	return <a class="sidebar-brand" href={href || JAVASCRIPT_VOID_0}>
+	return <PlainButton class="sidebar-brand" href={href || JAVASCRIPT_VOID_0} onClick={props.onClick}>
 		<img src={logo} />
 		{typeof children === "string" ?
 			<span class="valign-sibling">{children}</span> :
 			children
 		}
-	</a>;
+	</PlainButton>;
 }
 
 /**

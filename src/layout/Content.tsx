@@ -25,8 +25,9 @@ export interface ContentProps {
  * ```
  */
 export function Content(props: ContentProps) {
-	var { scrollX, scrollY } = props;
+	var { class: className, style, scrollX, scrollY } = props;
 	var classList: string[] = [];
+	if(className) classList.push(className);
 	if(scrollX) {
 		classList.push("overflow-x-auto");
 	}
@@ -34,5 +35,5 @@ export function Content(props: ContentProps) {
 		classList.push("overflow-y-auto");
 	}
 	const children = useChildren();
-	return <div class={classList.join(" ")}>{children}</div>;
+	return <div class={classList.join(" ")} style={style}>{children}</div>;
 }
