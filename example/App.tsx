@@ -33,6 +33,8 @@ function SidePlatMenu(props: SidePlatMenuProps) {
 	</SideMenu>;
 }
 
+export var pages = import.meta.glob("./pages/**/index.tsx");
+
 function AppView(props: AppVM) {
 	return <div class={props.className}>
 		<div class="app-header">
@@ -132,22 +134,30 @@ class AppVM {
 
 	@OnDidMount
 	protected async loadMenus() {
-		var menus: SysMenu[] = await request({
+		const menus: SysMenu[] = await request({
 			url: "getMenus",
 			method: "GET"
 		});
-		var pages = import.meta.glob("./pages/**/index.tsx");
-		var routes = [];
-		var stack: SysMenu[] = [];
-		const walkMenu = function(this: SysMenu, menu: SysMenu, index: number): SysMenu {
+		this.resetRoutes(menus, pages);
+		if(import.meta.hot) {
+			import.meta.hot.accept((mod) => {
+				this.resetRoutes(menus, mod.pages);
+			});
+		}
+	}
+	private resetRoutes(menus: SysMenu[], pages: Record<string, () => Promise<any>>) {
+		const routes = [];
+		const stack: SysMenu[] = [];
+		const walkMenu = function(this: SysMenu, menuRaw: SysMenu, index: number): SysMenu {
+			const menu = { ...menuRaw };
 			stack.push(menu);
-			var path = this ? `${this.path}/${menu.path}` : `/${menu.path}`;
+			const path = this ? `${this.path}/${menu.path}` : `/${menu.path}`;
 			menu.path = path;
 			if(menu.menuType === 'M') {
 				menu.children = menus.filter(m => m.parentId === menu.menuId).map(walkMenu, menu);
 			} else if(menu.menuType === 'C') {
 				menu.children = null;
-				let component = pages[`./pages${path}/index.tsx`];
+				const component = pages[`./pages${path}/index.tsx`];
 				if(component) {
 					routes.push({
 						path: path,
