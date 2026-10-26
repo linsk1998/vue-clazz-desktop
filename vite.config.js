@@ -6,6 +6,7 @@ const mock = require("vite-plugin-mockjs-lite");
 const requirePlugin = require('rollup-plugin-require');
 const moduleRollupPlugin = require('rollup-plugin-module');
 const moduleVitePlugin = require('vite-plugin-module');
+const tsdocPlugin = require('./scripts/tsdoc-plugin');
 
 // https://vitejs.dev/config/
 module.exports = ({ command, mode }) => {
@@ -75,7 +76,8 @@ module.exports = ({ command, mode }) => {
 				mockDir: "mock",
 				apiPath: "/mock",
 				delay: [500, 1000]
-			})
+			}),
+			tsdocPlugin()
 		],
 		build: {
 			minify: process.env.NODE_ENV == "production"

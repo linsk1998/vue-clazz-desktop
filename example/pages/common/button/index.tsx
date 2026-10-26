@@ -1,5 +1,6 @@
 import { Page } from "@ting-ui/vue-desktop";
 import { createComponent, ViewModel } from "vue-clazz-decorator";
+import ButtonApiCard from "./ButtonApiCard";
 import ButtonDisabledDemoCard from "./ButtonDisabledDemoCard";
 import ButtonGroupDemoCard from "./ButtonGroupDemoCard";
 import ButtonIconDemoCard from "./ButtonIconDemoCard";
@@ -21,6 +22,7 @@ function ButtonDemoPageView() {
 		<ButtonGroupDemoCard />
 		<ButtonSizeDemoCard />
 		<ButtonShapeDemoCard />
+		<ButtonApiCard />
 	</Page>;
 }
 

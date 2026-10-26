@@ -1,0 +1,11 @@
+const path = require("path");
+const { createRequire } = require("module");
+const localRequire = createRequire(require.resolve("vite-plugin-module"));
+const acorn = localRequire("acorn");
+const p = require("./tsdoc-plugin");
+const plugin = p({ include: ["example/**"], entry: "src/index.ts" });
+const id = path.resolve(process.cwd(), "example/pages/common/button/ButtonApiDemoCard.tsx");
+const code = "const props = import.meta.tsdoc.ButtonProps;\nconsole.log(props);";
+const ctx = { parse(c) { return acorn.parse(c, { ecmaVersion: 2022, sourceType: "module" }); } };
+const r = plugin.transform.call(ctx, code, id);
+console.log(r && r.code);
