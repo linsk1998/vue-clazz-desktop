@@ -3,6 +3,9 @@ const inject = require("@rollup/plugin-inject");
 const vue = require("@vitejs/plugin-vue");
 const vueJsx = require("@vitejs/plugin-vue-jsx");
 const mock = require("vite-plugin-mockjs-lite");
+const requirePlugin = require('rollup-plugin-require');
+const moduleRollupPlugin = require('rollup-plugin-module');
+const moduleVitePlugin = require('vite-plugin-module');
 
 // https://vitejs.dev/config/
 module.exports = ({ command, mode }) => {
@@ -45,6 +48,28 @@ module.exports = ({ command, mode }) => {
 				modules: {
 					"Symbol.metadata": "sky-core/pure/Symbol/metadata"
 				}
+			}),
+			{
+				...moduleRollupPlugin({
+					baseUrl: "./example",
+					idPrefix: "/example/",
+					include: ['example/**'],
+					exclude: [/\.(html|css|scss)(\?.*)?/]
+				}),
+				enforce: "pre",
+				apply: "build"
+			},
+			{
+				...moduleVitePlugin({
+					baseUrl: "./example",
+					idPrefix: "/example/",
+					include: ['example/**'],
+					exclude: [/\.(html|css|scss)(\?.*)?/]
+				}),
+				apply: "serve"
+			},
+			requirePlugin({
+				include: ["example/**/*.{tsx,ts}"]
 			}),
 			mock({
 				mockDir: "mock",

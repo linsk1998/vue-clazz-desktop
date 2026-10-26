@@ -12,6 +12,7 @@ export * from "./layout/Content";
 export * from "./layout/Footer";
 export * from "./layout/Header";
 export * from "./layout/Layout";
+export * from "./layout/ToolBar";
 export * from "./nav/Sidebar";
 export * from "./nav/SideMenu";
 export * from "./page/Page";
@@ -22,5 +23,6 @@ export * from "./router/Route";
 export * from "./router/Router";
 export * from "./router/useRoute";
 export * from "./router/useRouter";
+export * from "./utils/sleep";
 export * from "./views/Icon";
 

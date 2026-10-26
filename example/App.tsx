@@ -45,6 +45,13 @@ function AppView(props: AppVM) {
 					</PlainButton>
 				</Aside>
 				<Content>
+					<div class="app-breadcrumb">
+						<span>首页</span>
+						{props.meta?.stack?.map(menu => <>
+							&gt;
+							<span>{menu.menuName}</span>
+						</>)}
+					</div>
 				</Content>
 				<Aside class="inline-flex flex-row">
 					<PlainButton class="app-header-button">
@@ -188,8 +195,10 @@ class AppVM {
 	public handleGoHome() {
 		this.router.push("");
 	}
+	@State
+	public meta: any;
 	public handleRouteChange(route: RouteVM) {
-		console.log(route.meta);
+		this.meta = route.meta;
 	}
 }
 

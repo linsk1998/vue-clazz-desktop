@@ -71,3 +71,17 @@ body {
 	background: $light-tertiary-bg;
 	text-decoration: none;
 }
+
+.app-breadcrumb {
+	padding-top: 15px;
+	color: $light-tertiary-text;
+}
+
+.app-breadcrumb span {
+	margin: 0 8px;
+	color: $light-body-text;
+}
+
+.page {
+	padding: 0 15px;
+}

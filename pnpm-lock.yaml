@@ -83,9 +83,15 @@ importers:
       rollup:
         specifier: ^3.30.0
         version: 3.30.0
+      rollup-plugin-module:
+        specifier: ^0.0.1
+        version: 0.0.1
       rollup-plugin-progress:
         specifier: ^1.1.2
         version: 1.1.2
+      rollup-plugin-require:
+        specifier: ^0.0.1
+        version: 0.0.1
       sass:
         specifier: ^1.104.0
         version: 1.104.0
@@ -107,6 +113,9 @@ importers:
       vite-plugin-mockjs-lite:
         specifier: ^1.2.0
         version: 1.2.0
+      vite-plugin-module:
+        specifier: ^0.0.0
+        version: 0.0.0
       vitest:
         specifier: ^3.0.4
         version: 3.2.7(@types/debug@4.1.13)(@types/node@22.20.1)(jsdom@26.1.0)(lightningcss@1.33.0)(msw@3.0.3(@types/node@22.20.1)(typescript@6.0.3)(vite@6.4.3(@types/node@22.20.1)(lightningcss@1.33.0)(sass@1.104.0)))(sass@1.104.0)
@@ -759,6 +768,10 @@ packages:
       rollup:
         optional: true
 
+  '@rollup/pluginutils@4.2.1':
+    resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
+    engines: {node: '>= 8.0.0'}
+
   '@rollup/pluginutils@5.4.0':
     resolution: {integrity: sha512-MfPp06CjRLfXQ3wY0R8vJDYBy/MvVcc9OulEfR0B8Iv9ko+GCNaRZ+EpJYFl27LhKsZK0o420sYCRHCjfCgeUg==}
     engines: {node: '>=14.0.0'}
@@ -1361,6 +1374,9 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
 
+  estree-walker@1.0.1:
+    resolution: {integrity: sha512-1fMXF3YP4pZZVozF8j/ZLfvnR8NSIljt56UhbZ5PeeDmmGHpgpdwQt7ITlGvYaQukCvuBRMLEiKiYC+oeIg4cg==}
+
   estree-walker@2.0.2:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
 
@@ -1687,6 +1703,9 @@ packages:
     resolution: {integrity: sha512-MhWWlVnuab1RG5/zMRRcVGXZLCXrZTgfwMikgzCegsPnG62yDQo5JnqKkrK4jO5iKqDAZGItAqN5CtKBCBWRUA==}
     engines: {node: '>=16.14'}
 
+  magic-string@0.25.9:
+    resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
+
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
@@ -1807,6 +1826,10 @@ packages:
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
+  picomatch@2.3.2:
+    resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
+    engines: {node: '>=8.6'}
+
   picomatch@4.0.7:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
@@ -1900,8 +1923,14 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
+  rollup-plugin-module@0.0.1:
+    resolution: {integrity: sha512-xN8hOv2ApTOLBK6Hx+jvIvIzaVzzdptyS3jFgbTrVFVD1EF2QiV/68EMUmaQ5JO5cwgY+SAWCRTuI15/siEcrA==}
+
   rollup-plugin-progress@1.1.2:
     resolution: {integrity: sha512-6ehSZOMTZdAlRpe45kf56BnIOsDYC2GKWhGlK/Dh/Ae/AMUneMDyKdiv9ZlRrW/HVc986frTZcc2Zka+oF6W7Q==}
+
+  rollup-plugin-require@0.0.1:
+    resolution: {integrity: sha512-A9jpq7TYLKL+AkYyFK48+4NU89xfrFgsrOFSAvR19zdro3S+tDNy7S3mVER5ikF3Y24EoWmaJ3QPnv5ur3Hlgw==}
 
   rollup@3.30.0:
     resolution: {integrity: sha512-kQvGasUgN+AlWGliFn2POSajRQEsULVYFGTvOZmK06d7vCD+YhZztt70kGk3qaeAXeWYL5eO7zx+rAubBc55eA==}
@@ -1965,6 +1994,10 @@ packages:
   source-map@0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
+
+  sourcemap-codec@1.4.8:
+    resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
+    deprecated: Please use @jridgewell/sourcemap-codec instead
 
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
@@ -2164,6 +2197,9 @@ packages:
 
   vite-plugin-mockjs-lite@1.2.0:
     resolution: {integrity: sha512-3Cmw+ld+vpD8AG5lt2Mfo7fXUuL5iBTqVM0maxNH7mb6WZSiT69uJaxYK21IO9MNVgbGu3W313zgZUmlv6l/KQ==}
+
+  vite-plugin-module@0.0.0:
+    resolution: {integrity: sha512-0tl/D3EScKhjDQcSFp5JX7h5eo0QXogYUhbdrZAmfxX/x4Bj8ImK6kWxuRS0TLotdO8m0gpUEm+HD99aA64scQ==}
 
   vite@6.4.3:
     resolution: {integrity: sha512-NTKlcQjlAK7MlQoyb6LgaqHc8sso/pVyUJYWMws3jg21uTJw/LddqIFPcPqP6PzpgbIcZyKI85sFE4HBrQDA8A==}
@@ -2895,6 +2931,11 @@ snapshots:
     optionalDependencies:
       rollup: 3.30.0
 
+  '@rollup/pluginutils@4.2.1':
+    dependencies:
+      estree-walker: 2.0.2
+      picomatch: 2.3.2
+
   '@rollup/pluginutils@5.4.0(rollup@3.30.0)':
     dependencies:
       '@types/estree': 1.0.9
@@ -3492,6 +3533,8 @@ snapshots:
 
   esprima@4.0.1: {}
 
+  estree-walker@1.0.1: {}
+
   estree-walker@2.0.2: {}
 
   estree-walker@3.0.3:
@@ -3805,6 +3848,10 @@ snapshots:
 
   lru-cache@8.0.5: {}
 
+  magic-string@0.25.9:
+    dependencies:
+      sourcemap-codec: 1.4.8
+
   magic-string@0.30.21:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.6.0
@@ -3911,6 +3958,8 @@ snapshots:
   pathval@2.0.1: {}
 
   picocolors@1.1.1: {}
+
+  picomatch@2.3.2: {}
 
   picomatch@4.0.7: {}
 
@@ -4057,9 +4106,19 @@ snapshots:
       '@rolldown/binding-win32-x64-msvc': 1.2.7
     optional: true
 
+  rollup-plugin-module@0.0.1:
+    dependencies:
+      '@rollup/pluginutils': 4.2.1
+
   rollup-plugin-progress@1.1.2:
     dependencies:
       chalk: 2.4.2
+
+  rollup-plugin-require@0.0.1:
+    dependencies:
+      '@rollup/pluginutils': 4.2.1
+      estree-walker: 1.0.1
+      magic-string: 0.25.9
 
   rollup@3.30.0:
     optionalDependencies:
@@ -4134,6 +4193,8 @@ snapshots:
   source-map-js@1.2.1: {}
 
   source-map@0.6.1: {}
+
+  sourcemap-codec@1.4.8: {}
 
   stackback@0.0.2: {}
 
@@ -4328,6 +4389,11 @@ snapshots:
   vite-plugin-mockjs-lite@1.2.0:
     dependencies:
       mockjs-lite: 0.3.3
+
+  vite-plugin-module@0.0.0:
+    dependencies:
+      '@rollup/pluginutils': 4.2.1
+      magic-string: 0.25.9
 
   vite@6.4.3(@types/node@22.20.1)(lightningcss@1.33.0)(sass@1.104.0):
     dependencies:
