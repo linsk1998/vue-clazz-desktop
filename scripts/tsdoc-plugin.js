@@ -68,9 +68,14 @@ function createTSDocPlugin(options = {}) {
 	}
 
 	let initialized = false;
+	let entryMtime = -1;
 	function ensureInit() {
-		if(initialized) return;
+		var mtime = fs.statSync(entryPath).mtime.getTime();
+		if(initialized && mtime === entryMtime) return;
 		initialized = true;
+		entryMtime = mtime;
+		interfaceIndex.clear();
+		sourceFileCache.clear();
 		parseEntryPoint();
 	}
 

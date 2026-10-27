@@ -3,6 +3,7 @@ export * from "./button/Button";
 export * from "./button/Link";
 export * from "./button/PlainButton";
 // export * from "./button/Submit";
+export * from "./editor/Switch";
 export * from "./error/BizError";
 export * from "./error/EnvError";
 export * from "./error/RequestError";

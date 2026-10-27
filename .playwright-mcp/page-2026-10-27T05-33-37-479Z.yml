@@ -1,0 +1,199 @@
+- generic [ref=f2e3]:
+  - generic [ref=f2e5]:
+    - link [ref=f2e7] [cursor=pointer]:
+      - /url: javascript:void 0
+      - generic [aria-hidden] [ref=f2e8]: 
+    - generic [ref=f2e9]:
+      - link [ref=f2e10] [cursor=pointer]:
+        - /url: javascript:void 0
+      - link [ref=f2e12] [cursor=pointer]:
+        - /url: javascript:void 0
+        - generic [aria-hidden] [ref=f2e13]: 
+      - link [ref=f2e14] [cursor=pointer]:
+        - /url: javascript:void 0
+        - generic [aria-hidden] [ref=f2e15]: 
+    - generic [ref=f2e16]: 首页>通用组件>开关
+  - generic [ref=f2e19]:
+    - link "Ting Vue App" [ref=f2e21] [cursor=pointer]:
+      - /url: "#"
+    - generic [ref=f2e23]:
+      - generic: 概述
+      - list [ref=f2e24]:
+        - listitem [ref=f2e25]:
+          - link "快速开始" [ref=f2e26] [cursor=pointer]:
+            - /url: "#/quickstart"
+            - generic [aria-hidden]: 
+            - text: 快速开始
+      - generic [ref=f2e27]: 教程
+      - list [ref=f2e28]:
+        - listitem [ref=f2e29]:
+          - generic "开发教程" [ref=f2e30] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 开发教程
+          - text:   
+        - listitem [ref=f2e31]:
+          - generic "搭建教程" [ref=f2e32] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 搭建教程
+      - generic [ref=f2e33]: 组件
+      - list [ref=f2e34]:
+        - listitem [ref=f2e35]:
+          - generic "通用组件" [ref=f2e36] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 通用组件
+        - listitem [ref=f2e37]:
+          - generic "布局组件" [ref=f2e38] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 布局组件
+        - listitem [ref=f2e39]:
+          - generic "展示组件" [ref=f2e40] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 展示组件
+        - listitem [ref=f2e41]:
+          - generic "录入组件" [ref=f2e42] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 录入组件
+        - listitem [ref=f2e43]:
+          - generic "表单组件" [ref=f2e44] [cursor=pointer]:
+            - generic: 
+            - text: 表单组件
+        - listitem [ref=f2e45]:
+          - generic "导航组件" [ref=f2e46] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 导航组件
+        - listitem [ref=f2e47]:
+          - generic "页面管理" [ref=f2e48] [cursor=pointer]:
+            - generic: 
+            - text: 页面管理
+        - listitem [ref=f2e49]:
+          - generic "弹窗管理" [ref=f2e50] [cursor=pointer]:
+            - generic: 
+            - text: 弹窗管理
+        - listitem [ref=f2e51]:
+          - generic "弹层管理" [ref=f2e52] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 弹层管理
+        - listitem [ref=f2e53]:
+          - generic "模型注解" [ref=f2e54] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 模型注解
+        - listitem [ref=f2e55]:
+          - generic "表单联动" [ref=f2e56] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 表单联动
+        - listitem [ref=f2e57]:
+          - generic "表格组件" [ref=f2e58] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 表格组件
+        - listitem [ref=f2e59]:
+          - generic "增删改查" [ref=f2e60] [cursor=pointer]:
+            - generic [aria-hidden]: 
+            - generic: 
+            - text: 增删改查
+      - generic [ref=f2e61]: 示例
+      - list
+  - generic [ref=f2e63]:
+    - generic [ref=f2e65]:
+      - link "源代码" [ref=f2e66] [cursor=pointer]:
+        - /url: http://192.168.10.40:30000/zr-fe-group/zr-react-admin/-/blob/master/example/pages/common/switch/PlaygroundCard.tsx
+      - heading "开关" [level=4] [ref=f2e67]
+      - generic [ref=f2e68]:
+        - generic [ref=f2e69]:
+          - generic [ref=f2e70]: 配置
+          - generic [ref=f2e71]:
+            - generic [ref=f2e72]:
+              - checkbox "禁用" [ref=f2e73]
+              - text: 禁用
+            - generic [ref=f2e74]:
+              - checkbox "加载中" [ref=f2e75]
+              - text: 加载中
+        - generic [ref=f2e76]:
+          - generic [ref=f2e77]: 基本用法
+          - checkbox [ref=f2e81] [cursor=pointer]
+        - generic [ref=f2e82]:
+          - generic [ref=f2e83]: 非受控用法
+          - checkbox [checked] [ref=f2e87] [cursor=pointer]
+    - generic [ref=f2e89]:
+      - heading "API 文档" [level=4] [ref=f2e90]
+      - table [ref=f2e91]:
+        - rowgroup [ref=f2e92]:
+          - row [ref=f2e93]:
+            - columnheader "属性" [ref=f2e94]
+            - columnheader "说明" [ref=f2e95]
+            - columnheader "类型" [ref=f2e96]
+            - columnheader "可选" [ref=f2e97]
+        - rowgroup [ref=f2e98]:
+          - row [ref=f2e99]:
+            - cell [ref=f2e100]:
+              - code [ref=f2e101]: title
+            - cell "提示信息" [ref=f2e102]
+            - cell [ref=f2e103]:
+              - code [ref=f2e104]: string
+            - cell "是" [ref=f2e105]
+          - row [ref=f2e106]:
+            - cell [ref=f2e107]:
+              - code [ref=f2e108]: value
+            - cell "受控值" [ref=f2e109]
+            - cell [ref=f2e110]:
+              - code [ref=f2e111]: boolean
+            - cell "是" [ref=f2e112]
+          - row [ref=f2e113]:
+            - cell [ref=f2e114]:
+              - code [ref=f2e115]: defaultValue
+            - cell "非受控初始值" [ref=f2e116]
+            - cell [ref=f2e117]:
+              - code [ref=f2e118]: boolean
+            - cell "是" [ref=f2e119]
+          - row [ref=f2e120]:
+            - cell [ref=f2e121]:
+              - code [ref=f2e122]: onChange
+            - cell "变化回调" [ref=f2e123]
+            - cell [ref=f2e124]:
+              - code [ref=f2e125]: "(value: boolean) => any"
+            - cell "是" [ref=f2e126]
+          - row [ref=f2e127]:
+            - cell [ref=f2e128]:
+              - code [ref=f2e129]: onClick
+            - cell "点击回调，返回 Promise 时进入加载态" [ref=f2e130]
+            - cell [ref=f2e131]:
+              - code [ref=f2e132]: SwitchCallback
+            - cell "是" [ref=f2e133]
+          - row [ref=f2e134]:
+            - cell [ref=f2e135]:
+              - code [ref=f2e136]: disabled
+            - cell "是否禁用" [ref=f2e137]
+            - cell [ref=f2e138]:
+              - code [ref=f2e139]: boolean
+            - cell "是" [ref=f2e140]
+          - row [ref=f2e141]:
+            - cell [ref=f2e142]:
+              - code [ref=f2e143]: loading
+            - cell "是否加载中" [ref=f2e144]
+            - cell [ref=f2e145]:
+              - code [ref=f2e146]: boolean
+            - cell "是" [ref=f2e147]
+          - row [ref=f2e148]:
+            - cell [ref=f2e149]:
+              - code [ref=f2e150]: class
+            - cell "样式类" [ref=f2e151]
+            - cell [ref=f2e152]:
+              - code [ref=f2e153]: string
+            - cell "是" [ref=f2e154]
+          - row [ref=f2e155]:
+            - cell [ref=f2e156]:
+              - code [ref=f2e157]: style
+            - cell "样式" [ref=f2e158]
+            - cell [ref=f2e159]:
+              - code [ref=f2e160]: CSSProperties
+            - cell "是" [ref=f2e161]
