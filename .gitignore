@@ -9,6 +9,7 @@ coverage/
 
 # 日志
 *.log
+.playwright-mcp/
 npm-debug.log*
 pnpm-debug.log*
 
