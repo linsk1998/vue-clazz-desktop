@@ -4,6 +4,17 @@ export class ConfigProviderVM {
 	@Prop
 	@Provide
 	public onActionError: (error: any) => any;
+
+	@Prop
+	@Provide
+	public onReLogin: (error: any) => any;
+
+	@Prop
+	@Provide
+	public retryText: string;
+	@Prop
+	@Provide
+	public reloginText: string;
 }
 
 export function ConfigProviderView(props: ConfigProviderVM) {

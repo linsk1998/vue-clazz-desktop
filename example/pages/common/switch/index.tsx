@@ -1,7 +1,7 @@
 import { Page } from "@ting-ui/vue-desktop";
 import { createComponent, ViewModel } from "vue-clazz-decorator";
-import PlaygroundCard from "./PlaygroundCard";
 import SwitchApiCard from "./SwitchApiCard";
+import SwitchPlaygroundCard from "./SwitchPlaygroundCard";
 
 @ViewModel
 class SwitchDemoPageVM {
@@ -9,7 +9,7 @@ class SwitchDemoPageVM {
 
 function SwitchDemoPageView() {
 	return <Page>
-		<PlaygroundCard />
+		<SwitchPlaygroundCard />
 		<SwitchApiCard />
 	</Page>;
 }

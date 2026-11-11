@@ -37,6 +37,13 @@ export var pages = import.meta.glob("./pages/**/index.tsx");
 
 function AppView(props: AppVM) {
 	return <div class={props.className}>
+		<div class="app-content">
+			<HistoryHashRouter
+				ref="router"
+				routes={props.routes}
+				onRouteChange={props.handleRouteChange}
+			/>
+		</div>
 		<div class="app-header">
 			<Layout>
 				<Aside class="inline-flex flex-row">
@@ -98,13 +105,6 @@ function AppView(props: AppVM) {
 					/>
 				</SidebarBody>
 			</Sidebar>
-		</div>
-		<div class="app-content">
-			<HistoryHashRouter
-				ref="router"
-				routes={props.routes}
-				onRouteChange={props.handleRouteChange}
-			/>
 		</div>
 	</div>;
 }
